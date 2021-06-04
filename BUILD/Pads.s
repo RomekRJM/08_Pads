@@ -20,18 +20,28 @@
 	.import		_oam_clear
 	.import		_oam_meta_spr
 	.import		_pad_poll
+	.import		_pad_state
 	.import		_bank_spr
 	.import		_vram_adr
 	.import		_vram_write
 	.import		_check_collision
 	.export		_YellowSpr
+	.export		_FistSpr
 	.export		_BlueSpr
 	.export		_pad1
+	.export		_pad1_trigger
 	.export		_pad2
 	.export		_collision
 	.export		_boxGuyCounter
+	.export		_boxGuyShowFist
+	.export		_airSequence
+	.export		_status
 	.export		_BoxGuy1
+	.export		_BoxGuy1Fist
 	.export		_BoxGuy2
+	.export		_dbg1
+	.export		_dbg2
+	.export		_dbg3
 	.export		_box_2_guy_x
 	.export		_box_2_guy_y
 	.export		_text
@@ -46,16 +56,44 @@
 
 _boxGuyCounter:
 	.byte	$00
+_boxGuyShowFist:
+	.byte	$00
+_airSequence:
+	.byte	$FB
+	.byte	$FC
+	.byte	$FD
+	.byte	$FE
+	.byte	$FF
+	.byte	$00
+	.byte	$01
+	.byte	$02
+	.byte	$03
+	.byte	$04
+	.byte	$05
 _BoxGuy1:
 	.byte	$14
+	.byte	$1E
+	.byte	$0F
+	.byte	$0F
+	.res	2,$00
+_BoxGuy1Fist:
+	.byte	$24
 	.byte	$14
-	.byte	$0F
-	.byte	$0F
+	.byte	$07
+	.byte	$07
+	.res	2,$00
 _BoxGuy2:
 	.byte	$46
 	.byte	$14
 	.byte	$0F
 	.byte	$0F
+	.res	2,$00
+_dbg1:
+	.word	$0080
+_dbg2:
+	.word	$0081
+_dbg3:
+	.word	$0082
 
 .segment	"RODATA"
 
@@ -76,6 +114,12 @@ _YellowSpr:
 	.byte	$08
 	.byte	$10
 	.byte	$40
+	.byte	$80
+_FistSpr:
+	.byte	$00
+	.byte	$00
+	.byte	$00
+	.byte	$00
 	.byte	$80
 _BlueSpr:
 	.byte	$00
@@ -155,10 +199,16 @@ _palette_sp:
 _pad1:
 	.res	1,$00
 .segment	"ZEROPAGE"
+_pad1_trigger:
+	.res	1,$00
+.segment	"ZEROPAGE"
 _pad2:
 	.res	1,$00
 .segment	"ZEROPAGE"
 _collision:
+	.res	1,$00
+.segment	"BSS"
+_status:
 	.res	1,$00
 
 ; ---------------------------------------------------------------
@@ -200,7 +250,29 @@ _collision:
 	sta     (sp),y
 	lda     #<(_BlueSpr)
 	ldx     #>(_BlueSpr)
+	jsr     _oam_meta_spr
+;
+; if (boxGuyShowFist) {
+;
+	lda     _boxGuyShowFist
+	beq     L00A0
+;
+; oam_meta_spr(BoxGuy1Fist.x, BoxGuy1Fist.y, FistSpr);
+;
+	jsr     decsp2
+	lda     _BoxGuy1Fist
+	ldy     #$01
+	sta     (sp),y
+	lda     _BoxGuy1Fist+1
+	dey
+	sta     (sp),y
+	lda     #<(_FistSpr)
+	ldx     #>(_FistSpr)
 	jmp     _oam_meta_spr
+;
+; }
+;
+L00A0:	rts
 
 .endproc
 
@@ -215,51 +287,159 @@ _collision:
 .segment	"CODE"
 
 ;
+; boxGuyShowFist = 0;
+;
+	lda     #$00
+	sta     _boxGuyShowFist
+;
 ; if (pad1 & PAD_LEFT) {
 ;
 	lda     _pad1
 	and     #$02
-	beq     L00B5
+	beq     L00F4
 ;
-; BoxGuy1.x -= 1;
+; BoxGuy1.x -= 2;
 ;
-	dec     _BoxGuy1
+	lda     _BoxGuy1
+	sec
+	sbc     #$02
 ;
 ; } else if (pad1 & PAD_RIGHT) {
 ;
-	jmp     L00B6
-L00B5:	lda     _pad1
+	jmp     L00F3
+L00F4:	lda     _pad1
 	and     #$01
-	beq     L00B6
+	beq     L00F5
 ;
-; BoxGuy1.x += 1;
+; BoxGuy1.x += 2;
 ;
-	inc     _BoxGuy1
+	lda     #$02
+	clc
+	adc     _BoxGuy1
+L00F3:	sta     _BoxGuy1
 ;
 ; if (pad1 & PAD_UP) {
 ;
-L00B6:	lda     _pad1
+L00F5:	lda     _pad1
 	and     #$08
-	beq     L00B7
+	beq     L00F6
 ;
-; BoxGuy1.y -= 1;
+; BoxGuy1.status |= JUMPS;
 ;
-	dec     _BoxGuy1+1
+	lda     _BoxGuy1+4
+	ora     #$01
+	sta     _BoxGuy1+4
 ;
 ; } else if (pad1 & PAD_DOWN) {
 ;
-	jmp     L0092
-L00B7:	lda     _pad1
+	jmp     L00B7
+L00F6:	lda     _pad1
 	and     #$04
-	beq     L0092
+	beq     L00B7
 ;
 ; BoxGuy1.y += 1;
 ;
 	inc     _BoxGuy1+1
 ;
+; *dbg3 = status;
+;
+L00B7:	lda     _dbg3
+	sta     ptr1
+	lda     _dbg3+1
+	sta     ptr1+1
+	lda     _status
+	ldy     #$00
+	sta     (ptr1),y
+	iny
+	lda     #$00
+	sta     (ptr1),y
+;
+; if (BoxGuy1.status & JUMPS) {
+;
+	lda     _BoxGuy1+4
+	and     #$01
+	beq     L00C4
+;
+; BoxGuy1.y += airSequence[BoxGuy1.airSequence];
+;
+	ldy     _BoxGuy1+5
+	lda     _airSequence,y
+	clc
+	adc     _BoxGuy1+1
+	sta     _BoxGuy1+1
+;
+; ++BoxGuy1.airSequence;
+;
+	inc     _BoxGuy1+5
+;
+; if (BoxGuy1.airSequence >= AIR_SEQUENCE_LENGTH) {
+;
+	lda     _BoxGuy1+5
+	cmp     #$0B
+	bcc     L00C4
+;
+; BoxGuy1.airSequence = 0;
+;
+	lda     #$00
+	sta     _BoxGuy1+5
+;
+; BoxGuy1.status &= ~JUMPS;
+;
+	lda     _BoxGuy1+4
+	and     #$FE
+	sta     _BoxGuy1+4
+;
+; *dbg1 = BoxGuy1.airSequence;
+;
+L00C4:	lda     _dbg1
+	sta     ptr1
+	lda     _dbg1+1
+	sta     ptr1+1
+	lda     _BoxGuy1+5
+	ldy     #$00
+	sta     (ptr1),y
+	iny
+	lda     #$00
+	sta     (ptr1),y
+;
+; *dbg2 = BoxGuy1.y;
+;
+	lda     _dbg2
+	sta     ptr1
+	lda     _dbg2+1
+	sta     ptr1+1
+	lda     _BoxGuy1+1
+	dey
+	sta     (ptr1),y
+	iny
+	lda     #$00
+	sta     (ptr1),y
+;
+; if (pad1_trigger & PAD_B) {
+;
+	lda     _pad1_trigger
+	and     #$40
+	beq     L00CE
+;
+; boxGuyShowFist = 1;
+;
+	sty     _boxGuyShowFist
+;
+; BoxGuy1Fist.x = BoxGuy1.x + 16;
+;
+	lda     _BoxGuy1
+	clc
+	adc     #$10
+	sta     _BoxGuy1Fist
+;
+; BoxGuy1Fist.y = BoxGuy1.y;
+;
+	lda     _BoxGuy1+1
+	sta     _BoxGuy1Fist+1
+;
 ; BoxGuy2.x = box_2_guy_x[boxGuyCounter];
 ;
-L0092:	ldy     _boxGuyCounter
+L00CE:	ldy     _boxGuyCounter
 	lda     _box_2_guy_x,y
 	sta     _BoxGuy2
 ;
@@ -273,12 +453,12 @@ L0092:	ldy     _boxGuyCounter
 ;
 	lda     _boxGuyCounter
 	cmp     #$05
-	bcc     L00B8
+	bcc     L00F7
 	lda     #$00
-	jmp     L00B9
-L00B8:	inc     _boxGuyCounter
+	jmp     L00F8
+L00F7:	inc     _boxGuyCounter
 	lda     _boxGuyCounter
-L00B9:	sta     _boxGuyCounter
+L00F8:	sta     _boxGuyCounter
 ;
 ; }
 ;
@@ -310,7 +490,7 @@ L00B9:	sta     _boxGuyCounter
 ; if (collision) {
 ;
 	lda     _collision
-	beq     L00BA
+	beq     L00F9
 ;
 ; pal_col(0, 0x30);
 ;
@@ -321,7 +501,7 @@ L00B9:	sta     _boxGuyCounter
 ;
 ; pal_col(0, 0x00);
 ;
-L00BA:	jsr     pusha
+L00F9:	jsr     pusha
 	jmp     _pal_col
 
 .endproc
@@ -379,13 +559,19 @@ L00BA:	jsr     pusha
 ;
 ; ppu_wait_nmi(); // wait till beginning of the frame
 ;
-L006F:	jsr     _ppu_wait_nmi
+L0088:	jsr     _ppu_wait_nmi
 ;
 ; pad1 = pad_poll(0); // read the first controller
 ;
 	lda     #$00
 	jsr     _pad_poll
 	sta     _pad1
+;
+; pad1_trigger = pad_state(0);
+;
+	lda     #$00
+	jsr     _pad_state
+	sta     _pad1_trigger
 ;
 ; movement();
 ;
@@ -401,7 +587,7 @@ L006F:	jsr     _ppu_wait_nmi
 ;
 ; while (1) {
 ;
-	jmp     L006F
+	jmp     L0088
 
 .endproc
 

@@ -16,25 +16,38 @@
 
 // GLOBAL VARIABLES
 unsigned char pad1;
+unsigned char pad1_trigger;
 unsigned char pad2;
 unsigned char collision;
 unsigned char boxGuyCounter = 0;
-
+unsigned char boxGuyShowFist = 0;
 
 #pragma bss-name(push, "BSS")
+
+#define JUMPS 0x01
 
 struct BoxGuy {
     unsigned char x;
     unsigned char y;
     unsigned char width;
     unsigned char height;
+    unsigned char status;
+    unsigned char airSequence;
 };
 
-struct BoxGuy BoxGuy1 = {20, 20, 15, 15};
+#define AIR_SEQUENCE_LENGTH 11
+unsigned char airSequence[AIR_SEQUENCE_LENGTH] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
+unsigned char status;
+
+struct BoxGuy BoxGuy1 = {20, 30, 15, 15};
+struct BoxGuy BoxGuy1Fist = {36, 20, 7, 7};
 struct BoxGuy BoxGuy2 = {70, 20, 15, 15};
 // the width and height should be 1 less than the dimensions (16x16)
 // note, I'm using the top left as the 0,0 on x,y
 
+volatile unsigned int *dbg1 = (volatile unsigned int *)0x80;
+volatile unsigned int *dbg2 = (volatile unsigned int *)0x81;
+volatile unsigned int *dbg3 = (volatile unsigned int *)0x82;
 
 const unsigned char box_2_guy_x[] = {
         20, 22, 24, 26, 24, 22
@@ -98,6 +111,7 @@ void main(void) {
         // the sprites are pushed from a buffer to the OAM during nmi
 
         pad1 = pad_poll(0); // read the first controller
+        pad1_trigger = pad_state(0);
 
         movement();
         test_collision();
@@ -114,19 +128,46 @@ void draw_sprites(void) {
     oam_meta_spr(BoxGuy1.x, BoxGuy1.y, YellowSpr);
 
     oam_meta_spr(BoxGuy2.x, BoxGuy2.y, BlueSpr);
+
+    if (boxGuyShowFist) {
+        oam_meta_spr(BoxGuy1Fist.x, BoxGuy1Fist.y, FistSpr);
+    }
 }
 
 
 void movement(void) {
+    boxGuyShowFist = 0;
     if (pad1 & PAD_LEFT) {
-        BoxGuy1.x -= 1;
+        BoxGuy1.x -= 2;
     } else if (pad1 & PAD_RIGHT) {
-        BoxGuy1.x += 1;
+        BoxGuy1.x += 2;
     }
     if (pad1 & PAD_UP) {
-        BoxGuy1.y -= 1;
+        BoxGuy1.status |= JUMPS;
     } else if (pad1 & PAD_DOWN) {
         BoxGuy1.y += 1;
+    }
+
+    *dbg3 = status;
+
+    if (BoxGuy1.status & JUMPS) {
+        BoxGuy1.y += airSequence[BoxGuy1.airSequence];
+        ++BoxGuy1.airSequence;
+
+        if (BoxGuy1.airSequence >= AIR_SEQUENCE_LENGTH) {
+            BoxGuy1.airSequence = 0;
+            BoxGuy1.status &= ~JUMPS;
+        }
+    }
+
+    *dbg1 = BoxGuy1.airSequence;
+    *dbg2 = BoxGuy1.y;
+
+
+    if (pad1_trigger & PAD_B) {
+        boxGuyShowFist = 1;
+        BoxGuy1Fist.x = BoxGuy1.x + 16;
+        BoxGuy1Fist.y = BoxGuy1.y;
     }
 
     BoxGuy2.x = box_2_guy_x[boxGuyCounter];
