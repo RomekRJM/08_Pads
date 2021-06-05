@@ -47,25 +47,27 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
         NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
 };
 
-#define HOLD_POSITION 0xff
-#define LEFT 0
-#define RIGHT 1
-#define UP 2
-#define UP_RIGHT 3
-#define UP_LEFT 4
-#define JAB 5
+#define HOLD_POSITION 0
+#define LEFT 1
+#define RIGHT 2
+#define UP 3
+#define UP_RIGHT 4
+#define UP_LEFT 5
+#define DOWN 6
+#define JAB 7
 /*
  * These moves need to be ordered by the length descending, as algorithm
  * is going to greedily associate button sequence with a move.
  */
-#define MOVES_LIST_LENGTH 20
+#define MOVES_LIST_LENGTH 23
 unsigned char movesList[MOVES_LIST_LENGTH] = {
-        PAD_DOWN, PAD_RIGHT, PAD_A, NULL, JAB, // jab
+        PAD_LEFT, PAD_LEFT, PAD_A, NULL, JAB, // jab
         PAD_UP | PAD_RIGHT, NULL, UP_RIGHT,
         PAD_UP | PAD_LEFT, NULL, UP_LEFT,
         PAD_LEFT, NULL, LEFT,
         PAD_RIGHT, NULL, RIGHT,
-        PAD_UP, NULL, UP
+        PAD_UP, NULL, UP,
+        PAD_DOWN, NULL, DOWN
 };
 
 #define AIR_SEQUENCE_LENGTH 11
@@ -147,7 +149,6 @@ void main(void) {
         // the sprites are pushed from a buffer to the OAM during nmi
 
         pad1 = pad_poll(0); // read the first controller
-        pad1_trigger = pad_state(0);
         add_move(pad1, playerMoves);
 
         movement();
@@ -172,17 +173,22 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
 
     for (j = 0; j < MOVES_LIST_LENGTH - 1; ++j) {
         moveMatch = 0;
+        k = j;
         for (i = 0; i < PLAYER_MOVE_LENGTH; ++i) {
-            k = i + j;
+            k += i;
             if (k > MOVES_LIST_LENGTH - 1) {
                 moveMatch = 0;
                 break;
             }
-            if (movesList[i] == NULL) {
+            if (movesList[k] == NULL) {
                 if (moveMatch) {
-                    foundMove = movesList[i + 1];
+                    foundMove = movesList[k + 1];
                     break;
                 }
+                moveMatch = 0;
+                k += 2;
+
+                continue;
             }
             if (playerMoves[i].padState == movesList[k]) {
                 moveMatch = 1;
@@ -190,6 +196,9 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
                 moveMatch = 0;
                 break;
             }
+        }
+        if (foundMove) {
+            return foundMove;
         }
     }
 
@@ -218,6 +227,14 @@ void movement(void) {
     switch (move) {
         case UP:
             BoxGuy1.status |= JUMPS;
+            break;
+        case UP_RIGHT:
+            BoxGuy1.status |= JUMPS;
+            BoxGuy1.x += 2;
+            break;
+        case UP_LEFT:
+            BoxGuy1.status |= JUMPS;
+            BoxGuy1.x -= 2;
             break;
         case LEFT:
             BoxGuy1.x -= 2;
