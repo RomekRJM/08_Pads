@@ -79,29 +79,29 @@ _playerMoves:
 	.byte	$00
 	.res	3,$00
 _movesList:
-	.byte	$02
-	.byte	$02
-	.byte	$80
-	.byte	$00
 	.byte	$07
-	.byte	$09
-	.byte	$00
-	.byte	$04
-	.byte	$0A
-	.byte	$00
-	.byte	$05
-	.byte	$02
-	.byte	$00
-	.byte	$01
-	.byte	$01
-	.byte	$00
-	.byte	$02
-	.byte	$08
-	.byte	$00
 	.byte	$03
+	.byte	$02
+	.byte	$02
+	.byte	$02
 	.byte	$04
-	.byte	$00
+	.byte	$01
+	.byte	$09
+	.byte	$05
+	.byte	$01
+	.byte	$0A
+	.byte	$01
+	.byte	$01
+	.byte	$02
+	.byte	$02
+	.byte	$01
+	.byte	$01
+	.byte	$03
+	.byte	$01
+	.byte	$08
 	.byte	$06
+	.byte	$01
+	.byte	$04
 _airSequence:
 	.byte	$FB
 	.byte	$FC
@@ -299,7 +299,7 @@ _status:
 ; if (boxGuyShowFist) {
 ;
 	lda     _boxGuyShowFist
-	beq     L0115
+	beq     L0110
 ;
 ; oam_meta_spr(BoxGuy1Fist.x, BoxGuy1Fist.y, FistSpr);
 ;
@@ -316,7 +316,7 @@ _status:
 ;
 ; }
 ;
-L0115:	rts
+L0110:	rts
 
 .endproc
 
@@ -354,32 +354,32 @@ L0115:	rts
 ; }
 ;
 	cmp     #$01
-	beq     L0178
+	beq     L0173
 	cmp     #$02
-	beq     L017A
-	cmp     #$03
 	beq     L0175
+	cmp     #$03
+	beq     L0170
 	cmp     #$04
-	beq     L0176
+	beq     L0171
 	cmp     #$05
-	beq     L0177
+	beq     L0172
 	cmp     #$07
-	beq     L017B
-	jmp     L0123
+	beq     L0176
+	jmp     L011E
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0175:	lda     _BoxGuy1+4
+L0170:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0123
+	jmp     L011E
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0176:	lda     _BoxGuy1+4
+L0171:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
@@ -392,11 +392,11 @@ L0176:	lda     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0123
+	jmp     L011E
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0177:	lda     _BoxGuy1+4
+L0172:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
@@ -409,32 +409,32 @@ L0177:	lda     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0123
+	jmp     L011E
 ;
 ; BoxGuy1.x -= 2;
 ;
-L0178:	lda     _BoxGuy1
+L0173:	lda     _BoxGuy1
 	sec
 	sbc     #$02
 	sta     _BoxGuy1
 ;
 ; break;
 ;
-	jmp     L0123
+	jmp     L011E
 ;
 ; BoxGuy1.x += 2;
 ;
-L017A:	clc
+L0175:	clc
 	adc     _BoxGuy1
 	sta     _BoxGuy1
 ;
 ; break;
 ;
-	jmp     L0123
+	jmp     L011E
 ;
 ; boxGuyShowFist = 1;
 ;
-L017B:	lda     #$01
+L0176:	lda     #$01
 	sta     _boxGuyShowFist
 ;
 ; BoxGuy1Fist.x = BoxGuy1.x + 16;
@@ -451,7 +451,7 @@ L017B:	lda     #$01
 ;
 ; *dbg3 = status;
 ;
-L0123:	lda     _dbg3
+L011E:	lda     _dbg3
 	sta     ptr1
 	lda     _dbg3+1
 	sta     ptr1+1
@@ -465,7 +465,7 @@ L0123:	lda     _dbg3
 ;
 	lda     _BoxGuy1+4
 	and     #$01
-	beq     L014F
+	beq     L014A
 ;
 ; BoxGuy1.y += airSequence[BoxGuy1.airSequence];
 ;
@@ -483,7 +483,7 @@ L0123:	lda     _dbg3
 ;
 	lda     _BoxGuy1+5
 	cmp     #$0B
-	bcc     L014F
+	bcc     L014A
 ;
 ; BoxGuy1.airSequence = 0;
 ;
@@ -498,7 +498,7 @@ L0123:	lda     _dbg3
 ;
 ; *dbg1 = BoxGuy1.airSequence;
 ;
-L014F:	lda     _dbg1
+L014A:	lda     _dbg1
 	sta     ptr1
 	lda     _dbg1+1
 	sta     ptr1+1
@@ -538,12 +538,12 @@ L014F:	lda     _dbg1
 ;
 	lda     _boxGuyCounter
 	cmp     #$05
-	bcc     L017C
+	bcc     L0177
 	lda     #$00
-	jmp     L017D
-L017C:	inc     _boxGuyCounter
+	jmp     L0178
+L0177:	inc     _boxGuyCounter
 	lda     _boxGuyCounter
-L017D:	sta     _boxGuyCounter
+L0178:	sta     _boxGuyCounter
 ;
 ; }
 ;
@@ -575,7 +575,7 @@ L017D:	sta     _boxGuyCounter
 ; if (collision) {
 ;
 	lda     _collision
-	beq     L017E
+	beq     L0179
 ;
 ; pal_col(0, 0x30);
 ;
@@ -586,7 +586,7 @@ L017D:	sta     _boxGuyCounter
 ;
 ; pal_col(0, 0x00);
 ;
-L017E:	jsr     pusha
+L0179:	jsr     pusha
 	jmp     _pal_col
 
 .endproc
@@ -606,14 +606,29 @@ L017E:	jsr     pusha
 ;
 	jsr     pushax
 ;
-; for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
+; if ((pad == HOLD_POSITION) && (moves[0].padState == HOLD_POSITION)) return;
 ;
 	jsr     decsp1
-	lda     #$07
-	ldy     #$00
-L017F:	sta     (sp),y
+	ldy     #$03
 	lda     (sp),y
-	beq     L00BF
+	bne     L017D
+	dey
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	iny
+	lda     (ptr1),y
+	beq     L00BD
+;
+; for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
+;
+L017D:	lda     #$07
+	ldy     #$00
+L017A:	sta     (sp),y
+	lda     (sp),y
+	beq     L00C6
 ;
 ; moves[i] = moves[i - 1];
 ;
@@ -632,9 +647,9 @@ L017F:	sta     (sp),y
 	lda     (sp),y
 	sec
 	sbc     #$01
-	bcs     L00CA
+	bcs     L00D1
 	dex
-L00CA:	jsr     mulax3
+L00D1:	jsr     mulax3
 	jsr     tosaddax
 	jsr     pushax
 	ldx     #$00
@@ -647,11 +662,11 @@ L00CA:	jsr     mulax3
 	lda     (sp),y
 	sec
 	sbc     #$01
-	jmp     L017F
+	jmp     L017A
 ;
 ; moves[0].atFrame = get_frame_count();
 ;
-L00BF:	ldy     #$04
+L00C6:	ldy     #$04
 	jsr     pushwysp
 	jsr     _get_frame_count
 	ldx     #$00
@@ -673,7 +688,7 @@ L00BF:	ldy     #$04
 ;
 ; }
 ;
-	jmp     incsp4
+L00BD:	jmp     incsp4
 
 .endproc
 
@@ -692,120 +707,47 @@ L00BF:	ldy     #$04
 ;
 	jsr     pushax
 ;
-; unsigned char foundMove = HOLD_POSITION;
+; unsigned char j = 0;
 ;
-	jsr     decsp4
+	jsr     decsp5
 	lda     #$00
 	jsr     pusha
 ;
-; for (j = 0; j < MOVES_LIST_LENGTH - 1; ++j) {
+; while (j < MOVES_LIST_LENGTH) {
 ;
+	jmp     L00DC
+;
+; matchedLength = 0;
+;
+L0181:	tya
 	ldy     #$03
-L0182:	sta     (sp),y
-	cmp     #$16
-	jcs     L018B
+	sta     (sp),y
 ;
-; if (movesList[j] == NULL) {
+; currentMove = movesList[j];
 ;
-	ldy     #$06
+	ldy     #$07
 	lda     (sp),y
 	sta     ptr1+1
 	dey
 	lda     (sp),y
 	sta     ptr1
-	ldy     #$03
+	ldy     #$00
 	lda     (sp),y
 	tay
 	lda     (ptr1),y
-	bne     L0184
-;
-; ++j;
-;
-	ldy     #$03
-	clc
-	lda     #$01
-	adc     (sp),y
-	sta     (sp),y
-;
-; continue;
-;
-	jmp     L018A
-;
-; moveMatch = 0;
-;
-L0184:	lda     #$00
-	ldy     #$01
-	sta     (sp),y
-;
-; k = j;
-;
-	ldy     #$03
-	lda     (sp),y
-	dey
-	sta     (sp),y
-;
-; for (i = 0; i < PLAYER_MOVE_LENGTH; ++i) {
-;
-	lda     #$00
-	ldy     #$04
-L0180:	sta     (sp),y
-	cmp     #$08
-	jcs     L00E4
-;
-; k += i;
-;
-	lda     (sp),y
 	ldy     #$02
-	clc
-	adc     (sp),y
 	sta     (sp),y
 ;
-; if (k > MOVES_LIST_LENGTH - 1) {
-;
-	cmp     #$17
-	bcc     L00ED
-;
-; moveMatch = 0;
-;
-	lda     #$00
-	dey
-	sta     (sp),y
-;
-; break;
-;
-	jmp     L00E4
-;
-; if (movesList[k] == NULL) {
-;
-L00ED:	ldy     #$06
-	lda     (sp),y
-	sta     ptr1+1
-	dey
-	lda     (sp),y
-	sta     ptr1
-	ldy     #$02
-	lda     (sp),y
-	tay
-	lda     (ptr1),y
-	bne     L00F1
-;
-; if (moveMatch) {
-;
-	ldy     #$01
-	lda     (sp),y
-	beq     L0187
-;
-; foundMove = movesList[k + 1];
+; currentMoveLength = movesList[j + 1];
 ;
 	ldx     #$00
-	iny
-	lda     (sp),y
+	lda     (sp,x)
 	clc
 	adc     #$01
-	bcc     L0183
+	bcc     L0180
 	inx
 	clc
-L0183:	ldy     #$05
+L0180:	ldy     #$06
 	adc     (sp),y
 	sta     ptr1
 	txa
@@ -814,33 +756,43 @@ L0183:	ldy     #$05
 	sta     ptr1+1
 	ldy     #$00
 	lda     (ptr1),y
+	iny
 	sta     (sp),y
 ;
-; break;
+; k = 2 + j;
 ;
-	jmp     L0188
-;
-; moveMatch = 0;
-;
-L0187:	sta     (sp),y
-;
-; k += 2;
-;
-	iny
+	dey
+	lda     (sp),y
 	clc
-	tya
+	adc     #$02
+	ldy     #$04
+	sta     (sp),y
+;
+; for (i = 0; i < currentMoveLength; ++i) {
+;
+	lda     #$00
+	iny
+L017F:	sta     (sp),y
+	ldx     #$00
+	lda     (sp),y
+	ldy     #$01
+	cmp     (sp),y
+	bcs     L00EB
+;
+; k += i;
+;
+	ldy     #$05
+	lda     (sp),y
+	dey
+	clc
 	adc     (sp),y
 	sta     (sp),y
 ;
-; continue;
-;
-	jmp     L00E5
-;
 ; if (playerMoves[i].padState == movesList[k]) {
 ;
-L00F1:	ldy     #$0A
+	ldy     #$0B
 	jsr     pushwysp
-	ldy     #$06
+	ldy     #$07
 	ldx     #$00
 	lda     (sp),y
 	jsr     mulax3
@@ -850,72 +802,101 @@ L00F1:	ldy     #$0A
 	ldy     #$02
 	lda     (ptr1),y
 	jsr     pusha0
-	ldy     #$08
+	ldy     #$09
 	lda     (sp),y
 	sta     ptr1+1
 	dey
 	lda     (sp),y
 	sta     ptr1
-	ldy     #$04
+	ldy     #$06
 	lda     (sp),y
 	tay
 	lda     (ptr1),y
 	jsr     tosicmp0
-	bne     L00FE
+	bne     L00F4
 ;
-; moveMatch = 1;
+; ++matchedLength;
 ;
+	ldy     #$03
+	clc
 	lda     #$01
-	tay
+	adc     (sp),y
 	sta     (sp),y
 ;
 ; } else {
 ;
-	jmp     L00E5
+	jmp     L00EC
 ;
-; moveMatch = 0;
+; matchedLength = 0;
 ;
-L00FE:	lda     #$00
-	ldy     #$01
+L00F4:	ldx     #$00
+	txa
+	ldy     #$03
 	sta     (sp),y
 ;
 ; break;
 ;
-	jmp     L00E4
+	jmp     L0183
 ;
-; for (i = 0; i < PLAYER_MOVE_LENGTH; ++i) {
+; for (i = 0; i < currentMoveLength; ++i) {
 ;
-L00E5:	ldy     #$04
+L00EC:	ldy     #$05
 	clc
 	lda     #$01
 	adc     (sp),y
-	jmp     L0180
+	jmp     L017F
 ;
-; if (foundMove) {
+; if (matchedLength == currentMoveLength) {
 ;
-L00E4:	ldy     #$00
-L0188:	lda     (sp),y
+L00EB:	ldy     #$03
+L0183:	lda     (sp),y
+	ldy     #$01
+	cmp     (sp),y
+	bne     L0185
+	txa
 ;
-; return foundMove;
+; add_move(HOLD_POSITION, playerMoves);
 ;
-	bne     L018B
+	jsr     pusha
+	ldy     #$0A
+	lda     (sp),y
+	tax
+	dey
+	lda     (sp),y
+	jsr     _add_move
 ;
-; for (j = 0; j < MOVES_LIST_LENGTH - 1; ++j) {
+; return currentMove;
 ;
-	ldy     #$03
-L018A:	clc
-	lda     #$01
+	ldy     #$02
+	ldx     #$00
+	lda     (sp),y
+	jmp     L00D8
+;
+; j += 2 + currentMoveLength;
+;
+L0185:	lda     (sp),y
+	clc
+	adc     #$02
+	dey
+	clc
 	adc     (sp),y
-	jmp     L0182
+	sta     (sp),y
 ;
-; return foundMove;
+; while (j < MOVES_LIST_LENGTH) {
 ;
-L018B:	ldx     #$00
-	lda     (sp,x)
+L00DC:	ldy     #$00
+	lda     (sp),y
+	cmp     #$17
+	jcc     L0181
+;
+; return HOLD_POSITION;
+;
+	ldx     #$00
+	txa
 ;
 ; }
 ;
-	ldy     #$09
+L00D8:	ldy     #$0A
 	jmp     addysp
 
 .endproc

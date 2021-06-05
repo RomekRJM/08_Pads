@@ -61,13 +61,13 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
  */
 #define MOVES_LIST_LENGTH 23
 unsigned char movesList[MOVES_LIST_LENGTH] = {
-        PAD_LEFT, PAD_LEFT, PAD_A, NULL, JAB, // jab
-        PAD_UP | PAD_RIGHT, NULL, UP_RIGHT,
-        PAD_UP | PAD_LEFT, NULL, UP_LEFT,
-        PAD_LEFT, NULL, LEFT,
-        PAD_RIGHT, NULL, RIGHT,
-        PAD_UP, NULL, UP,
-        PAD_DOWN, NULL, DOWN
+        JAB, 3, PAD_LEFT, PAD_LEFT, PAD_LEFT,
+        UP_RIGHT, 1, PAD_UP | PAD_RIGHT,
+        UP_LEFT, 1, PAD_UP | PAD_LEFT,
+        LEFT, 1, PAD_LEFT,
+        RIGHT, 1, PAD_RIGHT,
+        UP, 1, PAD_UP,
+        DOWN, 1, PAD_DOWN
 };
 
 #define AIR_SEQUENCE_LENGTH 11
@@ -159,6 +159,10 @@ void main(void) {
 
 void add_move(unsigned char pad, struct PlayerMove *moves) {
     unsigned char i;
+
+    // only add no move once as a combo breaker
+    if ((pad == HOLD_POSITION) && (moves[0].padState == HOLD_POSITION)) return;
+
     for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
         moves[i] = moves[i - 1];
     }
@@ -168,41 +172,30 @@ void add_move(unsigned char pad, struct PlayerMove *moves) {
 }
 
 unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList) {
-    unsigned char i, j, k, moveMatch;
-    unsigned char foundMove = HOLD_POSITION;
-
-    for (j = 0; j < MOVES_LIST_LENGTH - 1; ++j) {
-        moveMatch = 0;
-        k = j;
-        for (i = 0; i < PLAYER_MOVE_LENGTH; ++i) {
+    unsigned char i, k, matchedLength, currentMove, currentMoveLength;
+    unsigned char j = 0;
+    while (j < MOVES_LIST_LENGTH) {
+        matchedLength = 0;
+        currentMove = movesList[j];
+        currentMoveLength = movesList[j + 1];
+        k = 2 + j;
+        for (i = 0; i < currentMoveLength; ++i) {
             k += i;
-            if (k > MOVES_LIST_LENGTH - 1) {
-                moveMatch = 0;
-                break;
-            }
-            if (movesList[k] == NULL) {
-                if (moveMatch) {
-                    foundMove = movesList[k + 1];
-                    break;
-                }
-                moveMatch = 0;
-                k += 2;
-
-                continue;
-            }
             if (playerMoves[i].padState == movesList[k]) {
-                moveMatch = 1;
+                ++matchedLength;
             } else {
-                moveMatch = 0;
+                matchedLength = 0;
                 break;
             }
         }
-        if (foundMove) {
-            return foundMove;
+        if (matchedLength == currentMoveLength) {
+            add_move(HOLD_POSITION, playerMoves);
+            return currentMove;
         }
+        j += 2 + currentMoveLength;
     }
 
-    return foundMove;
+    return HOLD_POSITION;
 }
 
 void draw_sprites(void) {
