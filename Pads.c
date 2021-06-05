@@ -35,19 +35,52 @@ struct BoxGuy {
     unsigned char airSequence;
 };
 
+struct PlayerMove {
+    int atFrame;
+    unsigned char padState;
+};
+
+#define NO_MOVE {0, 0}
+
+#define PLAYER_MOVE_LENGTH 8
+struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
+        NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
+};
+
+#define HOLD_POSITION 0xff
+#define LEFT 0
+#define RIGHT 1
+#define UP 2
+#define UP_RIGHT 3
+#define UP_LEFT 4
+#define JAB 5
+/*
+ * These moves need to be ordered by the length descending, as algorithm
+ * is going to greedily associate button sequence with a move.
+ */
+#define MOVES_LIST_LENGTH 20
+unsigned char movesList[MOVES_LIST_LENGTH] = {
+        PAD_DOWN, PAD_RIGHT, PAD_A, NULL, JAB, // jab
+        PAD_UP | PAD_RIGHT, NULL, UP_RIGHT,
+        PAD_UP | PAD_LEFT, NULL, UP_LEFT,
+        PAD_LEFT, NULL, LEFT,
+        PAD_RIGHT, NULL, RIGHT,
+        PAD_UP, NULL, UP
+};
+
 #define AIR_SEQUENCE_LENGTH 11
 unsigned char airSequence[AIR_SEQUENCE_LENGTH] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
 unsigned char status;
 
-struct BoxGuy BoxGuy1 = {20, 30, 15, 15};
+struct BoxGuy BoxGuy1 = {20, 180, 15, 15};
 struct BoxGuy BoxGuy1Fist = {36, 20, 7, 7};
 struct BoxGuy BoxGuy2 = {70, 20, 15, 15};
 // the width and height should be 1 less than the dimensions (16x16)
 // note, I'm using the top left as the 0,0 on x,y
 
-volatile unsigned int *dbg1 = (volatile unsigned int *)0x80;
-volatile unsigned int *dbg2 = (volatile unsigned int *)0x81;
-volatile unsigned int *dbg3 = (volatile unsigned int *)0x82;
+volatile unsigned int *dbg1 = (volatile unsigned int *) 0x80;
+volatile unsigned int *dbg2 = (volatile unsigned int *) 0x81;
+volatile unsigned int *dbg3 = (volatile unsigned int *) 0x82;
 
 const unsigned char box_2_guy_x[] = {
         20, 22, 24, 26, 24, 22
@@ -81,6 +114,10 @@ void movement(void);
 
 void test_collision(void);
 
+void add_move(unsigned char, struct PlayerMove *);
+
+unsigned char get_move(struct PlayerMove *, unsigned char *);
+
 
 void main(void) {
 
@@ -104,7 +141,6 @@ void main(void) {
     // turn on screen
     ppu_on_all();
 
-
     while (1) {
         // infinite loop
         ppu_wait_nmi(); // wait till beginning of the frame
@@ -112,6 +148,7 @@ void main(void) {
 
         pad1 = pad_poll(0); // read the first controller
         pad1_trigger = pad_state(0);
+        add_move(pad1, playerMoves);
 
         movement();
         test_collision();
@@ -119,6 +156,45 @@ void main(void) {
     }
 }
 
+void add_move(unsigned char pad, struct PlayerMove *moves) {
+    unsigned char i;
+    for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
+        moves[i] = moves[i - 1];
+    }
+
+    moves[0].atFrame = get_frame_count();
+    moves[0].padState = pad;
+}
+
+unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList) {
+    unsigned char i, j, k, moveMatch;
+    unsigned char foundMove = HOLD_POSITION;
+
+    for (j = 0; j < MOVES_LIST_LENGTH - 1; ++j) {
+        moveMatch = 0;
+        for (i = 0; i < PLAYER_MOVE_LENGTH; ++i) {
+            k = i + j;
+            if (k > MOVES_LIST_LENGTH - 1) {
+                moveMatch = 0;
+                break;
+            }
+            if (movesList[i] == NULL) {
+                if (moveMatch) {
+                    foundMove = movesList[i + 1];
+                    break;
+                }
+            }
+            if (playerMoves[i].padState == movesList[k]) {
+                moveMatch = 1;
+            } else {
+                moveMatch = 0;
+                break;
+            }
+        }
+    }
+
+    return foundMove;
+}
 
 void draw_sprites(void) {
     // clear all sprites from sprite buffer
@@ -136,16 +212,26 @@ void draw_sprites(void) {
 
 
 void movement(void) {
+    unsigned char move = get_move(playerMoves, movesList);
     boxGuyShowFist = 0;
-    if (pad1 & PAD_LEFT) {
-        BoxGuy1.x -= 2;
-    } else if (pad1 & PAD_RIGHT) {
-        BoxGuy1.x += 2;
-    }
-    if (pad1 & PAD_UP) {
-        BoxGuy1.status |= JUMPS;
-    } else if (pad1 & PAD_DOWN) {
-        BoxGuy1.y += 1;
+
+    switch (move) {
+        case UP:
+            BoxGuy1.status |= JUMPS;
+            break;
+        case LEFT:
+            BoxGuy1.x -= 2;
+            break;
+        case RIGHT:
+            BoxGuy1.x += 2;
+            break;
+        case JAB:
+            boxGuyShowFist = 1;
+            BoxGuy1Fist.x = BoxGuy1.x + 16;
+            BoxGuy1Fist.y = BoxGuy1.y;
+            break;
+        default:
+            break;
     }
 
     *dbg3 = status;
@@ -162,13 +248,6 @@ void movement(void) {
 
     *dbg1 = BoxGuy1.airSequence;
     *dbg2 = BoxGuy1.y;
-
-
-    if (pad1_trigger & PAD_B) {
-        boxGuyShowFist = 1;
-        BoxGuy1Fist.x = BoxGuy1.x + 16;
-        BoxGuy1Fist.y = BoxGuy1.y;
-    }
 
     BoxGuy2.x = box_2_guy_x[boxGuyCounter];
     BoxGuy2.y = box_2_guy_y[boxGuyCounter];
