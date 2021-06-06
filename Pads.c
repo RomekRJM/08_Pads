@@ -47,6 +47,7 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
         NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
 };
 
+#define MAX_ALLOWED_MOVE_INTERVAL 30
 #define HOLD_POSITION 0
 #define LEFT 1
 #define RIGHT 2
@@ -74,7 +75,7 @@ unsigned char movesList[MOVES_LIST_LENGTH] = {
 unsigned char airSequence[AIR_SEQUENCE_LENGTH] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
 unsigned char status;
 
-struct BoxGuy BoxGuy1 = {20, 180, 15, 15};
+struct BoxGuy BoxGuy1 = {20, 182, 15, 15};
 struct BoxGuy BoxGuy1Fist = {36, 20, 7, 7};
 struct BoxGuy BoxGuy2 = {70, 20, 15, 15};
 // the width and height should be 1 less than the dimensions (16x16)
@@ -92,7 +93,7 @@ const unsigned char box_2_guy_y[] = {
         14, 16, 14, 12, 10, 8
 };
 
-const unsigned char text[] = "Sprite Collisions";
+const unsigned char text[] = "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
 
 const unsigned char palette_bg[] = {
         0x00, 0x00, 0x10, 0x30, // gray, gray, lt gray, white
@@ -135,7 +136,7 @@ void main(void) {
 
     // load the text
     // vram_adr(NTADR_A(x,y));
-    vram_adr(NTADR_A(7, 14)); // set a start position for the text
+    vram_adr(NTADR_A(0, 89)); // set a start position for the text
 
     // vram_write draws the array to the screen
     vram_write(text, sizeof(text));
@@ -161,7 +162,7 @@ void add_move(unsigned char pad, struct PlayerMove *moves) {
     unsigned char i;
 
     // only add no move once as a combo breaker
-    if ((pad == HOLD_POSITION) && (moves[0].padState == HOLD_POSITION)) return;
+    if (pad == HOLD_POSITION) return;
 
     for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
         moves[i] = moves[i - 1];
@@ -180,13 +181,12 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
         currentMoveLength = movesList[j + 1];
         k = 2 + j;
         for (i = 0; i < currentMoveLength; ++i) {
-            k += i;
             if (playerMoves[i].padState == movesList[k]) {
                 ++matchedLength;
             } else {
-                matchedLength = 0;
                 break;
             }
+            ++k;
         }
         if (matchedLength == currentMoveLength) {
             add_move(HOLD_POSITION, playerMoves);
