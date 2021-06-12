@@ -47,7 +47,7 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
         NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
 };
 
-#define MAX_ALLOWED_MOVE_INTERVAL 30
+#define MAX_ALLOWED_MOVE_INTERVAL 300
 #define HOLD_POSITION 0
 #define LEFT 1
 #define RIGHT 2
@@ -60,15 +60,20 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
  * These moves need to be ordered by the length descending, as algorithm
  * is going to greedily associate button sequence with a move.
  */
-#define MOVES_LIST_LENGTH 23
+#define MOVES_LIST_LENGTH 22
 unsigned char movesList[MOVES_LIST_LENGTH] = {
-        JAB, 3, PAD_LEFT, PAD_LEFT, PAD_LEFT,
+        JAB, 2, PAD_LEFT, PAD_LEFT,
         UP_RIGHT, 1, PAD_UP | PAD_RIGHT,
         UP_LEFT, 1, PAD_UP | PAD_LEFT,
         LEFT, 1, PAD_LEFT,
         RIGHT, 1, PAD_RIGHT,
         UP, 1, PAD_UP,
         DOWN, 1, PAD_DOWN
+};
+
+unsigned char allowedIntervals[] = {
+        MAX_ALLOWED_MOVE_INTERVAL, 2 * MAX_ALLOWED_MOVE_INTERVAL, 3 * MAX_ALLOWED_MOVE_INTERVAL,
+        4 * MAX_ALLOWED_MOVE_INTERVAL, 5 * MAX_ALLOWED_MOVE_INTERVAL, 6 * MAX_ALLOWED_MOVE_INTERVAL
 };
 
 #define AIR_SEQUENCE_LENGTH 11
@@ -150,7 +155,10 @@ void main(void) {
         // the sprites are pushed from a buffer to the OAM during nmi
 
         pad1 = pad_poll(0); // read the first controller
-        add_move(pad1, playerMoves);
+
+        if (pad1 != HOLD_POSITION) {
+            add_move(pad1, playerMoves);
+        }
 
         movement();
         test_collision();
@@ -162,7 +170,7 @@ void add_move(unsigned char pad, struct PlayerMove *moves) {
     unsigned char i;
 
     // only add no move once as a combo breaker
-    if (pad == HOLD_POSITION) return;
+    if (moves[0].padState == HOLD_POSITION && pad == HOLD_POSITION) return;
 
     for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
         moves[i] = moves[i - 1];
@@ -175,13 +183,16 @@ void add_move(unsigned char pad, struct PlayerMove *moves) {
 unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList) {
     unsigned char i, k, matchedLength, currentMove, currentMoveLength;
     unsigned char j = 0;
+    int currentFrame = get_frame_count();
+
     while (j < MOVES_LIST_LENGTH) {
         matchedLength = 0;
         currentMove = movesList[j];
         currentMoveLength = movesList[j + 1];
         k = 2 + j;
-        for (i = 0; i < currentMoveLength; ++i) {
-            if (playerMoves[i].padState == movesList[k]) {
+        for (i = currentMoveLength - 1; i >= 0; --i) {
+            if (playerMoves[i].padState == movesList[k]
+                && (currentFrame - playerMoves[i].atFrame <= allowedIntervals[i])) {
                 ++matchedLength;
             } else {
                 break;
@@ -189,7 +200,7 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
             ++k;
         }
         if (matchedLength == currentMoveLength) {
-            add_move(HOLD_POSITION, playerMoves);
+            //add_move(HOLD_POSITION, playerMoves);
             return currentMove;
         }
         j += 2 + currentMoveLength;
