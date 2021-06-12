@@ -78,12 +78,21 @@ _playerMoves:
 	.byte	$00
 	.word	$0000
 	.byte	$00
-	.res	3,$00
+	.word	$0000
+	.byte	$00
 _movesList:
 	.byte	$07
+	.byte	$05
 	.byte	$02
+	.byte	$00
 	.byte	$02
+	.byte	$00
 	.byte	$02
+	.byte	$07
+	.byte	$03
+	.byte	$04
+	.byte	$00
+	.byte	$04
 	.byte	$04
 	.byte	$01
 	.byte	$09
@@ -103,12 +112,14 @@ _movesList:
 	.byte	$01
 	.byte	$04
 _allowedIntervals:
-	.byte	$2C
-	.byte	$58
-	.byte	$84
-	.byte	$B0
-	.byte	$DC
-	.byte	$08
+	.byte	$1E
+	.byte	$3C
+	.byte	$5A
+	.byte	$78
+	.byte	$96
+	.byte	$B4
+	.byte	$D2
+	.byte	$F0
 _airSequence:
 	.byte	$FB
 	.byte	$FC
@@ -307,7 +318,7 @@ _status:
 ; if (boxGuyShowFist) {
 ;
 	lda     _boxGuyShowFist
-	beq     L0117
+	beq     L0121
 ;
 ; oam_meta_spr(BoxGuy1Fist.x, BoxGuy1Fist.y, FistSpr);
 ;
@@ -324,7 +335,7 @@ _status:
 ;
 ; }
 ;
-L0117:	rts
+L0121:	rts
 
 .endproc
 
@@ -362,32 +373,32 @@ L0117:	rts
 ; }
 ;
 	cmp     #$01
-	beq     L017A
+	beq     L0184
 	cmp     #$02
-	beq     L017C
+	beq     L0186
 	cmp     #$03
-	beq     L0177
+	beq     L0181
 	cmp     #$04
-	beq     L0178
+	beq     L0182
 	cmp     #$05
-	beq     L0179
+	beq     L0183
 	cmp     #$07
-	beq     L017D
-	jmp     L0125
+	beq     L0187
+	jmp     L012F
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0177:	lda     _BoxGuy1+4
+L0181:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0125
+	jmp     L012F
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0178:	lda     _BoxGuy1+4
+L0182:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
@@ -400,11 +411,11 @@ L0178:	lda     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0125
+	jmp     L012F
 ;
 ; BoxGuy1.status |= JUMPS;
 ;
-L0179:	lda     _BoxGuy1+4
+L0183:	lda     _BoxGuy1+4
 	ora     #$01
 	sta     _BoxGuy1+4
 ;
@@ -417,32 +428,32 @@ L0179:	lda     _BoxGuy1+4
 ;
 ; break;
 ;
-	jmp     L0125
+	jmp     L012F
 ;
 ; BoxGuy1.x -= 2;
 ;
-L017A:	lda     _BoxGuy1
+L0184:	lda     _BoxGuy1
 	sec
 	sbc     #$02
 	sta     _BoxGuy1
 ;
 ; break;
 ;
-	jmp     L0125
+	jmp     L012F
 ;
 ; BoxGuy1.x += 2;
 ;
-L017C:	clc
+L0186:	clc
 	adc     _BoxGuy1
 	sta     _BoxGuy1
 ;
 ; break;
 ;
-	jmp     L0125
+	jmp     L012F
 ;
 ; boxGuyShowFist = 1;
 ;
-L017D:	lda     #$01
+L0187:	lda     #$01
 	sta     _boxGuyShowFist
 ;
 ; BoxGuy1Fist.x = BoxGuy1.x + 16;
@@ -459,21 +470,18 @@ L017D:	lda     #$01
 ;
 ; *dbg3 = status;
 ;
-L0125:	lda     _dbg3
+L012F:	lda     _dbg3
 	sta     ptr1
 	lda     _dbg3+1
 	sta     ptr1+1
 	lda     _status
-	sta     (ptr1),y
-	iny
-	lda     #$00
 	sta     (ptr1),y
 ;
 ; if (BoxGuy1.status & JUMPS) {
 ;
 	lda     _BoxGuy1+4
 	and     #$01
-	beq     L0151
+	beq     L015B
 ;
 ; BoxGuy1.y += airSequence[BoxGuy1.airSequence];
 ;
@@ -491,7 +499,7 @@ L0125:	lda     _dbg3
 ;
 	lda     _BoxGuy1+5
 	cmp     #$0B
-	bcc     L0151
+	bcc     L015B
 ;
 ; BoxGuy1.airSequence = 0;
 ;
@@ -506,7 +514,7 @@ L0125:	lda     _dbg3
 ;
 ; *dbg1 = BoxGuy1.airSequence;
 ;
-L0151:	lda     _dbg1
+L015B:	lda     _dbg1
 	sta     ptr1
 	lda     _dbg1+1
 	sta     ptr1+1
@@ -546,12 +554,12 @@ L0151:	lda     _dbg1
 ;
 	lda     _boxGuyCounter
 	cmp     #$05
-	bcc     L017E
+	bcc     L0188
 	lda     #$00
-	jmp     L017F
-L017E:	inc     _boxGuyCounter
+	jmp     L0189
+L0188:	inc     _boxGuyCounter
 	lda     _boxGuyCounter
-L017F:	sta     _boxGuyCounter
+L0189:	sta     _boxGuyCounter
 ;
 ; }
 ;
@@ -583,7 +591,7 @@ L017F:	sta     _boxGuyCounter
 ; if (collision) {
 ;
 	lda     _collision
-	beq     L0180
+	beq     L018A
 ;
 ; pal_col(0, 0x30);
 ;
@@ -594,7 +602,7 @@ L017F:	sta     _boxGuyCounter
 ;
 ; pal_col(0, 0x00);
 ;
-L0180:	jsr     pusha
+L018A:	jsr     pusha
 	jmp     _pal_col
 
 .endproc
@@ -625,18 +633,18 @@ L0180:	jsr     pusha
 	sta     ptr1
 	iny
 	lda     (ptr1),y
-	bne     L0184
+	bne     L018E
 	iny
 	lda     (sp),y
-	beq     L00C4
+	beq     L00CE
 ;
 ; for (i = PLAYER_MOVE_LENGTH - 1; i > 0; --i) {
 ;
-L0184:	lda     #$07
+L018E:	lda     #$07
 	ldy     #$00
-L0181:	sta     (sp),y
+L018B:	sta     (sp),y
 	lda     (sp),y
-	beq     L00CB
+	beq     L00D5
 ;
 ; moves[i] = moves[i - 1];
 ;
@@ -655,9 +663,9 @@ L0181:	sta     (sp),y
 	lda     (sp),y
 	sec
 	sbc     #$01
-	bcs     L00D6
+	bcs     L00E0
 	dex
-L00D6:	jsr     mulax3
+L00E0:	jsr     mulax3
 	jsr     tosaddax
 	jsr     pushax
 	ldx     #$00
@@ -670,11 +678,11 @@ L00D6:	jsr     mulax3
 	lda     (sp),y
 	sec
 	sbc     #$01
-	jmp     L0181
+	jmp     L018B
 ;
 ; moves[0].atFrame = get_frame_count();
 ;
-L00CB:	ldy     #$04
+L00D5:	ldy     #$04
 	jsr     pushwysp
 	jsr     _get_frame_count
 	ldx     #$00
@@ -696,7 +704,7 @@ L00CB:	ldy     #$04
 ;
 ; }
 ;
-L00C4:	jmp     incsp4
+L00CE:	jmp     incsp4
 
 .endproc
 
@@ -728,11 +736,11 @@ L00C4:	jmp     incsp4
 ;
 ; while (j < MOVES_LIST_LENGTH) {
 ;
-	jmp     L00E2
+	jmp     L00EC
 ;
 ; matchedLength = 0;
 ;
-L0188:	lda     #$00
+L0192:	lda     #$00
 	ldy     #$05
 	sta     (sp),y
 ;
@@ -757,10 +765,10 @@ L0188:	lda     #$00
 	lda     (sp),y
 	clc
 	adc     #$01
-	bcc     L0187
+	bcc     L0191
 	ldx     #$01
 	clc
-L0187:	ldy     #$08
+L0191:	ldy     #$08
 	adc     (sp),y
 	sta     ptr1
 	txa
@@ -788,7 +796,7 @@ L0187:	ldy     #$08
 	sec
 	sbc     #$01
 	ldy     #$07
-L0186:	sta     (sp),y
+L0190:	sta     (sp),y
 ;
 ; if (playerMoves[i].padState == movesList[k]
 ;
@@ -818,7 +826,7 @@ L0186:	sta     (sp),y
 ;
 	lda     (ptr1),y
 	jsr     tosicmp0
-	bne     L00F1
+	bne     L00FB
 	jsr     pushw0sp
 	ldy     #$0F
 	jsr     pushwysp
@@ -841,12 +849,12 @@ L0186:	sta     (sp),y
 	tay
 	lda     _allowedIntervals,y
 	jsr     tosicmp0
-	bcc     L00FA
-	bne     L00F1
+	bcc     L0104
+	bne     L00FB
 ;
 ; ++matchedLength;
 ;
-L00FA:	ldy     #$05
+L0104:	ldy     #$05
 	clc
 	lda     #$01
 	adc     (sp),y
@@ -866,26 +874,26 @@ L00FA:	ldy     #$05
 	lda     (sp),y
 	sec
 	sbc     #$01
-	jmp     L0186
+	jmp     L0190
 ;
 ; if (matchedLength == currentMoveLength) {
 ;
-L00F1:	ldy     #$05
+L00FB:	ldy     #$05
 	ldx     #$00
 	lda     (sp),y
 	ldy     #$03
 	cmp     (sp),y
-	bne     L018A
+	bne     L0194
 ;
 ; return currentMove;
 ;
 	iny
 	lda     (sp),y
-	jmp     L00DD
+	jmp     L00E7
 ;
 ; j += 2 + currentMoveLength;
 ;
-L018A:	lda     (sp),y
+L0194:	lda     (sp),y
 	clc
 	adc     #$02
 	dey
@@ -895,10 +903,10 @@ L018A:	lda     (sp),y
 ;
 ; while (j < MOVES_LIST_LENGTH) {
 ;
-L00E2:	ldy     #$02
+L00EC:	ldy     #$02
 	lda     (sp),y
-	cmp     #$16
-	jcc     L0188
+	cmp     #$1E
+	jcc     L0192
 ;
 ; return HOLD_POSITION;
 ;
@@ -906,7 +914,7 @@ L00E2:	ldy     #$02
 ;
 ; }
 ;
-L00DD:	ldy     #$0C
+L00E7:	ldy     #$0C
 	jmp     addysp
 
 .endproc
@@ -964,18 +972,13 @@ L00DD:	ldy     #$0C
 ;
 ; ppu_wait_nmi(); // wait till beginning of the frame
 ;
-L00B4:	jsr     _ppu_wait_nmi
+L00C0:	jsr     _ppu_wait_nmi
 ;
 ; pad1 = pad_poll(0); // read the first controller
 ;
 	lda     #$00
 	jsr     _pad_poll
 	sta     _pad1
-;
-; if (pad1 != HOLD_POSITION) {
-;
-	lda     _pad1
-	beq     L00BC
 ;
 ; add_move(pad1, playerMoves);
 ;
@@ -986,7 +989,7 @@ L00B4:	jsr     _ppu_wait_nmi
 ;
 ; movement();
 ;
-L00BC:	jsr     _movement
+	jsr     _movement
 ;
 ; test_collision();
 ;
@@ -998,7 +1001,7 @@ L00BC:	jsr     _movement
 ;
 ; while (1) {
 ;
-	jmp     L00B4
+	jmp     L00C0
 
 .endproc
 

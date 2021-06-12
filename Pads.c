@@ -44,10 +44,10 @@ struct PlayerMove {
 
 #define PLAYER_MOVE_LENGTH 8
 struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
-        NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
+        NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE, NO_MOVE
 };
 
-#define MAX_ALLOWED_MOVE_INTERVAL 300
+#define MAX_ALLOWED_MOVE_INTERVAL 30
 #define HOLD_POSITION 0
 #define LEFT 1
 #define RIGHT 2
@@ -60,9 +60,10 @@ struct PlayerMove playerMoves[PLAYER_MOVE_LENGTH] = {
  * These moves need to be ordered by the length descending, as algorithm
  * is going to greedily associate button sequence with a move.
  */
-#define MOVES_LIST_LENGTH 22
+#define MOVES_LIST_LENGTH 30
 unsigned char movesList[MOVES_LIST_LENGTH] = {
-        JAB, 2, PAD_LEFT, PAD_LEFT,
+        JAB, 5, PAD_LEFT, HOLD_POSITION, PAD_LEFT, HOLD_POSITION, PAD_LEFT,
+        JAB, 3, PAD_DOWN, HOLD_POSITION, PAD_DOWN,
         UP_RIGHT, 1, PAD_UP | PAD_RIGHT,
         UP_LEFT, 1, PAD_UP | PAD_LEFT,
         LEFT, 1, PAD_LEFT,
@@ -73,7 +74,8 @@ unsigned char movesList[MOVES_LIST_LENGTH] = {
 
 unsigned char allowedIntervals[] = {
         MAX_ALLOWED_MOVE_INTERVAL, 2 * MAX_ALLOWED_MOVE_INTERVAL, 3 * MAX_ALLOWED_MOVE_INTERVAL,
-        4 * MAX_ALLOWED_MOVE_INTERVAL, 5 * MAX_ALLOWED_MOVE_INTERVAL, 6 * MAX_ALLOWED_MOVE_INTERVAL
+        4 * MAX_ALLOWED_MOVE_INTERVAL, 5 * MAX_ALLOWED_MOVE_INTERVAL, 6 * MAX_ALLOWED_MOVE_INTERVAL,
+        7 * MAX_ALLOWED_MOVE_INTERVAL, 8 * MAX_ALLOWED_MOVE_INTERVAL
 };
 
 #define AIR_SEQUENCE_LENGTH 11
@@ -88,7 +90,7 @@ struct BoxGuy BoxGuy2 = {70, 20, 15, 15};
 
 volatile unsigned int *dbg1 = (volatile unsigned int *) 0x80;
 volatile unsigned int *dbg2 = (volatile unsigned int *) 0x81;
-volatile unsigned int *dbg3 = (volatile unsigned int *) 0x82;
+volatile unsigned char *dbg3 = (volatile unsigned char *) 0x82;
 
 const unsigned char box_2_guy_x[] = {
         20, 22, 24, 26, 24, 22
@@ -126,7 +128,6 @@ void add_move(unsigned char, struct PlayerMove *);
 
 unsigned char get_move(struct PlayerMove *, unsigned char *);
 
-
 void main(void) {
 
     ppu_off(); // screen off
@@ -156,9 +157,7 @@ void main(void) {
 
         pad1 = pad_poll(0); // read the first controller
 
-        if (pad1 != HOLD_POSITION) {
-            add_move(pad1, playerMoves);
-        }
+        add_move(pad1, playerMoves);
 
         movement();
         test_collision();
@@ -191,6 +190,7 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
         currentMoveLength = movesList[j + 1];
         k = 2 + j;
         for (i = currentMoveLength - 1; i >= 0; --i) {
+
             if (playerMoves[i].padState == movesList[k]
                 && (currentFrame - playerMoves[i].atFrame <= allowedIntervals[i])) {
                 ++matchedLength;
@@ -200,7 +200,6 @@ unsigned char get_move(struct PlayerMove *playerMoves, unsigned char *movesList)
             ++k;
         }
         if (matchedLength == currentMoveLength) {
-            //add_move(HOLD_POSITION, playerMoves);
             return currentMove;
         }
         j += 2 + currentMoveLength;
@@ -287,5 +286,3 @@ void test_collision(void) {
         pal_col(0, 0x00);
     }
 }
-
-
