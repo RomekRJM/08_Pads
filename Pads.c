@@ -2,6 +2,7 @@
 #include "LIB/nesdoug.h"
 #include "Sprites.h"
 #include "lungs.h"
+#include "math.h"
 
 typedef struct {
     unsigned char x;
@@ -19,14 +20,14 @@ volatile unsigned int *dbg1 = (volatile unsigned int *) 0x80;
 volatile unsigned int *dbg2 = (volatile unsigned int *) 0x81;
 volatile unsigned char *dbg3 = (volatile unsigned char *) 0x82;
 
-const unsigned char paletteBackground[] = {
+const char paletteBackground[] = {
         0x0f, 0x06, 0x16, 0x26,
         0x0f, 0x06, 0x16, 0x26,
         0x0f, 0x06, 0x16, 0x26,
         0x0f, 0x06, 0x16, 0x26,
 };
 
-const unsigned char paletteSprite[] = {
+const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
         0x0f, 0x3d, 0x30, 0x05,
         0x0f, 0x3d, 0x30, 0x05,
@@ -60,16 +61,17 @@ void main(void) {
 
     while (1) {
         ppu_wait_nmi();
-
         movement();
         draw_sprites();
     }
 }
 
-void draw_sprites(void) {
+void draw_sprites() {
     oam_clear();
     oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
 }
 
-void movement(void) {
+void movement() {
+    virusCoordinates.x = 20 + sin(get_frame_count()/32);
+    virusCoordinates.y = 20 + cos(get_frame_count()/32);
 }

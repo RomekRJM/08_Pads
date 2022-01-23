@@ -62,7 +62,6 @@ const unsigned char virus[] = {
         24, 56, 0xf3, 0,
         32, 56, 0xf4, 0,
         40, 56, 0xf5, 0,
-        48, 56, 0xf6, 0,
         128
 };
 

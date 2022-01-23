@@ -21,8 +21,11 @@
 	.import		_bank_spr
 	.import		_vram_adr
 	.import		_vram_unrle
+	.import		_get_frame_count
 	.export		_virus
 	.export		_lungs
+	.import		_sin
+	.import		_cos
 	.export		_virusCoordinates
 	.export		_dbg1
 	.export		_dbg2
@@ -300,10 +303,6 @@ _virus:
 	.byte	$38
 	.byte	$F5
 	.byte	$00
-	.byte	$30
-	.byte	$38
-	.byte	$F6
-	.byte	$00
 	.byte	$80
 _lungs:
 	.byte	$01
@@ -488,6 +487,26 @@ _paletteSprite:
 
 .segment	"CODE"
 
+;
+; virusCoordinates.x = 20 + sin(get_frame_count()/32);
+;
+	jsr     _get_frame_count
+	jsr     shrax4
+	jsr     shrax1
+	jsr     _sin
+	clc
+	adc     #$14
+	sta     _virusCoordinates
+;
+; virusCoordinates.y = 20 + cos(get_frame_count()/32);
+;
+	jsr     _get_frame_count
+	jsr     shrax4
+	jsr     shrax1
+	jsr     _cos
+	clc
+	adc     #$14
+	sta     _virusCoordinates+1
 ;
 ; }
 ;
