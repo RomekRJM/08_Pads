@@ -18,6 +18,5 @@ move /Y labels.txt BUILD\
 move /Y %name%.s BUILD\ 
 move /Y %name%.nes BUILD\ 
 
-pause
 
 BUILD\%name%.nes
