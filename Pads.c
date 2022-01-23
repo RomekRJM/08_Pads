@@ -3,17 +3,17 @@
 #include "Sprites.h"
 #include "lungs.h"
 
+typedef struct {
+    unsigned char x;
+    unsigned char y;
+} Coordinates;
 
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
+Coordinates virusCoordinates = {20, 20};
 
 #pragma bss-name(push, "BSS")
-
-struct Coordinates {
-    unsigned char x;
-    unsigned char y;
-};
 
 volatile unsigned int *dbg1 = (volatile unsigned int *) 0x80;
 volatile unsigned int *dbg2 = (volatile unsigned int *) 0x81;
@@ -28,9 +28,9 @@ const unsigned char paletteBackground[] = {
 
 const unsigned char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0
+        0x0f, 0x3d, 0x30, 0x05,
+        0x0f, 0x3d, 0x30, 0x05,
+        0x0f, 0x3d, 0x30, 0x05,
 };
 
 
@@ -67,12 +67,9 @@ void main(void) {
 }
 
 void draw_sprites(void) {
-    // clear all sprites from sprite buffer
-//    oam_clear();
-
-//    oam_meta_spr(BoxGuy1.x, BoxGuy1.y, YellowSpr);
+    oam_clear();
+    oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
 }
-
 
 void movement(void) {
 }

@@ -16,14 +16,14 @@
 	.import		_ppu_wait_nmi
 	.import		_ppu_off
 	.import		_ppu_on_all
+	.import		_oam_clear
+	.import		_oam_meta_spr
 	.import		_bank_spr
 	.import		_vram_adr
 	.import		_vram_unrle
-	.export		_YellowSpr
-	.export		_FistSpr
-	.export		_BlueSpr
 	.export		_virus
 	.export		_lungs
+	.export		_virusCoordinates
 	.export		_dbg1
 	.export		_dbg2
 	.export		_dbg3
@@ -35,6 +35,9 @@
 
 .segment	"DATA"
 
+_virusCoordinates:
+	.byte	$14
+	.byte	$14
 _dbg1:
 	.word	$0080
 _dbg2:
@@ -44,52 +47,10 @@ _dbg3:
 
 .segment	"RODATA"
 
-_YellowSpr:
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$08
-	.byte	$10
-	.byte	$00
-	.byte	$08
-	.byte	$00
-	.byte	$00
-	.byte	$40
-	.byte	$08
-	.byte	$08
-	.byte	$10
-	.byte	$40
-	.byte	$80
-_FistSpr:
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$80
-_BlueSpr:
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$01
-	.byte	$00
-	.byte	$08
-	.byte	$10
-	.byte	$01
-	.byte	$08
-	.byte	$00
-	.byte	$00
-	.byte	$41
-	.byte	$08
-	.byte	$08
-	.byte	$10
-	.byte	$41
-	.byte	$80
 _virus:
 	.byte	$00
 	.byte	$00
-	.byte	$81
+	.byte	$80
 	.byte	$00
 	.byte	$08
 	.byte	$00
@@ -474,18 +435,18 @@ _paletteSprite:
 	.byte	$3D
 	.byte	$30
 	.byte	$05
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
-	.byte	$00
+	.byte	$0F
+	.byte	$3D
+	.byte	$30
+	.byte	$05
+	.byte	$0F
+	.byte	$3D
+	.byte	$30
+	.byte	$05
+	.byte	$0F
+	.byte	$3D
+	.byte	$30
+	.byte	$05
 
 ; ---------------------------------------------------------------
 ; void __near__ draw_sprites (void)
@@ -498,9 +459,22 @@ _paletteSprite:
 .segment	"CODE"
 
 ;
-; }
+; oam_clear();
 ;
-	rts
+	jsr     _oam_clear
+;
+; oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
+;
+	jsr     decsp2
+	lda     _virusCoordinates
+	ldy     #$01
+	sta     (sp),y
+	lda     _virusCoordinates+1
+	dey
+	sta     (sp),y
+	lda     #<(_virus)
+	ldx     #>(_virus)
+	jmp     _oam_meta_spr
 
 .endproc
 
