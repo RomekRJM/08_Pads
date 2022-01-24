@@ -5,8 +5,8 @@
 #include "math.h"
 
 typedef struct {
-    unsigned char x;
-    unsigned char y;
+    int x;
+    int y;
 } Coordinates;
 
 #pragma bss-name(push, "ZEROPAGE")
@@ -60,9 +60,10 @@ void main(void) {
     ppu_on_all();
 
     while (1) {
-        ppu_wait_nmi();
         movement();
         draw_sprites();
+        ppu_wait_nmi();
+//        gray_line();
     }
 }
 
@@ -72,6 +73,6 @@ void draw_sprites() {
 }
 
 void movement() {
-    virusCoordinates.x = 20 + sin(get_frame_count()/32);
-    virusCoordinates.y = 20 + cos(get_frame_count()/32);
+    virusCoordinates.x = 20 + 128 * sin(get_frame_count());
+    virusCoordinates.y = 20 + 128 * cos(get_frame_count());
 }

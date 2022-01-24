@@ -6,11 +6,30 @@
 	.smart		on
 	.autoimport	on
 	.case		on
-	.debuginfo	off
+	.debuginfo	on
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
+	.dbg		file, "Pads.c", 1676, 1642955382
+	.dbg		file, "LIB/neslib.h", 9271, 1642938971
+	.dbg		file, "LIB/nesdoug.h", 6862, 1642938971
+	.dbg		file, "Sprites.h", 1659, 1642945136
+	.dbg		file, "lungs.h", 586, 1642942743
+	.dbg		file, "math.h", 137, 1642943959
 	.forceimport	__STARTUP__
+	.dbg		sym, "pal_bg", "00", extern, "_pal_bg"
+	.dbg		sym, "pal_spr", "00", extern, "_pal_spr"
+	.dbg		sym, "ppu_wait_nmi", "00", extern, "_ppu_wait_nmi"
+	.dbg		sym, "ppu_off", "00", extern, "_ppu_off"
+	.dbg		sym, "ppu_on_all", "00", extern, "_ppu_on_all"
+	.dbg		sym, "oam_clear", "00", extern, "_oam_clear"
+	.dbg		sym, "oam_meta_spr", "00", extern, "_oam_meta_spr"
+	.dbg		sym, "bank_spr", "00", extern, "_bank_spr"
+	.dbg		sym, "vram_adr", "00", extern, "_vram_adr"
+	.dbg		sym, "vram_unrle", "00", extern, "_vram_unrle"
+	.dbg		sym, "get_frame_count", "00", extern, "_get_frame_count"
+	.dbg		sym, "sin", "00", extern, "_sin"
+	.dbg		sym, "cos", "00", extern, "_cos"
 	.import		_pal_bg
 	.import		_pal_spr
 	.import		_ppu_wait_nmi
@@ -39,8 +58,8 @@
 .segment	"DATA"
 
 _virusCoordinates:
-	.byte	$14
-	.byte	$14
+	.word	$0014
+	.word	$0014
 _dbg1:
 	.word	$0080
 _dbg2:
@@ -455,26 +474,31 @@ _paletteSprite:
 
 .proc	_draw_sprites: near
 
+	.dbg	func, "draw_sprites", "00", extern, "_draw_sprites"
+
 .segment	"CODE"
 
 ;
 ; oam_clear();
 ;
+	.dbg	line, "Pads.c", 71
 	jsr     _oam_clear
 ;
 ; oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
 ;
+	.dbg	line, "Pads.c", 72
 	jsr     decsp2
 	lda     _virusCoordinates
 	ldy     #$01
 	sta     (sp),y
-	lda     _virusCoordinates+1
+	lda     _virusCoordinates+2
 	dey
 	sta     (sp),y
 	lda     #<(_virus)
 	ldx     #>(_virus)
 	jmp     _oam_meta_spr
 
+	.dbg	line
 .endproc
 
 ; ---------------------------------------------------------------
@@ -485,33 +509,45 @@ _paletteSprite:
 
 .proc	_movement: near
 
+	.dbg	func, "movement", "00", extern, "_movement"
+
 .segment	"CODE"
 
 ;
-; virusCoordinates.x = 20 + sin(get_frame_count()/32);
+; virusCoordinates.x = 20 + 128 * sin(get_frame_count());
 ;
+	.dbg	line, "Pads.c", 76
 	jsr     _get_frame_count
-	jsr     shrax4
-	jsr     shrax1
 	jsr     _sin
+	jsr     aslax4
+	jsr     aslax3
 	clc
 	adc     #$14
-	sta     _virusCoordinates
+	bcc     L0002
+	inx
+L0002:	sta     _virusCoordinates
+	stx     _virusCoordinates+1
 ;
-; virusCoordinates.y = 20 + cos(get_frame_count()/32);
+; virusCoordinates.y = 20 + 128 * cos(get_frame_count());
 ;
+	.dbg	line, "Pads.c", 77
 	jsr     _get_frame_count
-	jsr     shrax4
-	jsr     shrax1
 	jsr     _cos
+	jsr     aslax4
+	jsr     aslax3
 	clc
 	adc     #$14
-	sta     _virusCoordinates+1
+	bcc     L0003
+	inx
+L0003:	sta     _virusCoordinates+2
+	stx     _virusCoordinates+2+1
 ;
 ; }
 ;
+	.dbg	line, "Pads.c", 78
 	rts
 
+	.dbg	line
 .endproc
 
 ; ---------------------------------------------------------------
@@ -522,61 +558,75 @@ _paletteSprite:
 
 .proc	_main: near
 
+	.dbg	func, "main", "00", extern, "_main"
+
 .segment	"CODE"
 
 ;
 ; ppu_off(); // screen off
 ;
+	.dbg	line, "Pads.c", 45
 	jsr     _ppu_off
 ;
 ; pal_bg(paletteBackground);
 ;
+	.dbg	line, "Pads.c", 48
 	lda     #<(_paletteBackground)
 	ldx     #>(_paletteBackground)
 	jsr     _pal_bg
 ;
 ; pal_spr(paletteSprite);
 ;
+	.dbg	line, "Pads.c", 49
 	lda     #<(_paletteSprite)
 	ldx     #>(_paletteSprite)
 	jsr     _pal_spr
 ;
 ; bank_spr(1);
 ;
+	.dbg	line, "Pads.c", 53
 	lda     #$01
 	jsr     _bank_spr
 ;
 ; vram_adr(NAMETABLE_A);
 ;
+	.dbg	line, "Pads.c", 55
 	ldx     #$20
 	lda     #$00
 	jsr     _vram_adr
 ;
 ; vram_unrle(lungs);
 ;
+	.dbg	line, "Pads.c", 57
 	lda     #<(_lungs)
 	ldx     #>(_lungs)
 	jsr     _vram_unrle
 ;
 ; ppu_on_all();
 ;
+	.dbg	line, "Pads.c", 60
 	jsr     _ppu_on_all
-;
-; ppu_wait_nmi();
-;
-L0002:	jsr     _ppu_wait_nmi
 ;
 ; movement();
 ;
-	jsr     _movement
+	.dbg	line, "Pads.c", 63
+L0002:	jsr     _movement
 ;
 ; draw_sprites();
 ;
+	.dbg	line, "Pads.c", 64
 	jsr     _draw_sprites
+;
+; ppu_wait_nmi();
+;
+	.dbg	line, "Pads.c", 65
+	jsr     _ppu_wait_nmi
 ;
 ; while (1) {
 ;
+	.dbg	line, "Pads.c", 62
 	jmp     L0002
 
+	.dbg	line
 .endproc
 
