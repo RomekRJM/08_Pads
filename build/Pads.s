@@ -10,32 +10,29 @@
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
-	.dbg		file, "Pads.c", 1676, 1642955382
-	.dbg		file, "LIB/neslib.h", 9271, 1642938971
-	.dbg		file, "LIB/nesdoug.h", 6862, 1642938971
-	.dbg		file, "Sprites.h", 1659, 1642945136
+	.dbg		file, "pads.c", 1695, 1643084069
+	.dbg		file, "lib/neslib.h", 9271, 1642938971
+	.dbg		file, "lib/nesdoug.h", 6862, 1642938971
+	.dbg		file, "sprites.h", 1659, 1642945136
 	.dbg		file, "lungs.h", 586, 1642942743
-	.dbg		file, "math.h", 137, 1642943959
+	.dbg		file, "math.h", 187, 1643086901
 	.forceimport	__STARTUP__
 	.dbg		sym, "pal_bg", "00", extern, "_pal_bg"
 	.dbg		sym, "pal_spr", "00", extern, "_pal_spr"
 	.dbg		sym, "ppu_wait_nmi", "00", extern, "_ppu_wait_nmi"
 	.dbg		sym, "ppu_off", "00", extern, "_ppu_off"
 	.dbg		sym, "ppu_on_all", "00", extern, "_ppu_on_all"
-	.dbg		sym, "oam_clear", "00", extern, "_oam_clear"
 	.dbg		sym, "oam_meta_spr", "00", extern, "_oam_meta_spr"
 	.dbg		sym, "bank_spr", "00", extern, "_bank_spr"
 	.dbg		sym, "vram_adr", "00", extern, "_vram_adr"
 	.dbg		sym, "vram_unrle", "00", extern, "_vram_unrle"
 	.dbg		sym, "get_frame_count", "00", extern, "_get_frame_count"
-	.dbg		sym, "sin", "00", extern, "_sin"
-	.dbg		sym, "cos", "00", extern, "_cos"
+	.dbg		sym, "virusPath", "00", extern, "_virusPath"
 	.import		_pal_bg
 	.import		_pal_spr
 	.import		_ppu_wait_nmi
 	.import		_ppu_off
 	.import		_ppu_on_all
-	.import		_oam_clear
 	.import		_oam_meta_spr
 	.import		_bank_spr
 	.import		_vram_adr
@@ -43,9 +40,9 @@
 	.import		_get_frame_count
 	.export		_virus
 	.export		_lungs
-	.import		_sin
-	.import		_cos
+	.import		_virusPath
 	.export		_virusCoordinates
+	.export		_initialVirusCoordinates
 	.export		_dbg1
 	.export		_dbg2
 	.export		_dbg3
@@ -58,8 +55,11 @@
 .segment	"DATA"
 
 _virusCoordinates:
-	.word	$0014
-	.word	$0014
+	.word	$0000
+	.word	$0000
+_initialVirusCoordinates:
+	.word	$001A
+	.word	$000A
 _dbg1:
 	.word	$0080
 _dbg2:
@@ -479,14 +479,9 @@ _paletteSprite:
 .segment	"CODE"
 
 ;
-; oam_clear();
-;
-	.dbg	line, "Pads.c", 71
-	jsr     _oam_clear
-;
 ; oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
 ;
-	.dbg	line, "Pads.c", 72
+	.dbg	line, "pads.c", 67
 	jsr     decsp2
 	lda     _virusCoordinates
 	ldy     #$01
@@ -514,37 +509,55 @@ _paletteSprite:
 .segment	"CODE"
 
 ;
-; virusCoordinates.x = 20 + 128 * sin(get_frame_count());
+; virusCoordinates.x = initialVirusCoordinates.x + virusPath[get_frame_count()].x;
 ;
-	.dbg	line, "Pads.c", 76
+	.dbg	line, "pads.c", 71
+	lda     _initialVirusCoordinates
+	ldx     _initialVirusCoordinates+1
+	jsr     pushax
 	jsr     _get_frame_count
-	jsr     _sin
-	jsr     aslax4
-	jsr     aslax3
+	jsr     aslax2
 	clc
-	adc     #$14
-	bcc     L0002
-	inx
-L0002:	sta     _virusCoordinates
+	adc     #<(_virusPath)
+	sta     ptr1
+	txa
+	adc     #>(_virusPath)
+	sta     ptr1+1
+	ldy     #$01
+	lda     (ptr1),y
+	tax
+	dey
+	lda     (ptr1),y
+	jsr     tosaddax
+	sta     _virusCoordinates
 	stx     _virusCoordinates+1
 ;
-; virusCoordinates.y = 20 + 128 * cos(get_frame_count());
+; virusCoordinates.y = initialVirusCoordinates.y + virusPath[get_frame_count()].y;
 ;
-	.dbg	line, "Pads.c", 77
+	.dbg	line, "pads.c", 72
+	lda     _initialVirusCoordinates+2
+	ldx     _initialVirusCoordinates+2+1
+	jsr     pushax
 	jsr     _get_frame_count
-	jsr     _cos
-	jsr     aslax4
-	jsr     aslax3
+	jsr     aslax2
 	clc
-	adc     #$14
-	bcc     L0003
-	inx
-L0003:	sta     _virusCoordinates+2
+	adc     #<(_virusPath)
+	sta     ptr1
+	txa
+	adc     #>(_virusPath)
+	sta     ptr1+1
+	ldy     #$03
+	lda     (ptr1),y
+	tax
+	dey
+	lda     (ptr1),y
+	jsr     tosaddax
+	sta     _virusCoordinates+2
 	stx     _virusCoordinates+2+1
 ;
 ; }
 ;
-	.dbg	line, "Pads.c", 78
+	.dbg	line, "pads.c", 73
 	rts
 
 	.dbg	line
@@ -565,66 +578,66 @@ L0003:	sta     _virusCoordinates+2
 ;
 ; ppu_off(); // screen off
 ;
-	.dbg	line, "Pads.c", 45
+	.dbg	line, "pads.c", 41
 	jsr     _ppu_off
 ;
 ; pal_bg(paletteBackground);
 ;
-	.dbg	line, "Pads.c", 48
+	.dbg	line, "pads.c", 44
 	lda     #<(_paletteBackground)
 	ldx     #>(_paletteBackground)
 	jsr     _pal_bg
 ;
 ; pal_spr(paletteSprite);
 ;
-	.dbg	line, "Pads.c", 49
+	.dbg	line, "pads.c", 45
 	lda     #<(_paletteSprite)
 	ldx     #>(_paletteSprite)
 	jsr     _pal_spr
 ;
 ; bank_spr(1);
 ;
-	.dbg	line, "Pads.c", 53
+	.dbg	line, "pads.c", 49
 	lda     #$01
 	jsr     _bank_spr
 ;
 ; vram_adr(NAMETABLE_A);
 ;
-	.dbg	line, "Pads.c", 55
+	.dbg	line, "pads.c", 51
 	ldx     #$20
 	lda     #$00
 	jsr     _vram_adr
 ;
 ; vram_unrle(lungs);
 ;
-	.dbg	line, "Pads.c", 57
+	.dbg	line, "pads.c", 53
 	lda     #<(_lungs)
 	ldx     #>(_lungs)
 	jsr     _vram_unrle
 ;
 ; ppu_on_all();
 ;
-	.dbg	line, "Pads.c", 60
+	.dbg	line, "pads.c", 56
 	jsr     _ppu_on_all
 ;
 ; movement();
 ;
-	.dbg	line, "Pads.c", 63
+	.dbg	line, "pads.c", 59
 L0002:	jsr     _movement
 ;
 ; draw_sprites();
 ;
-	.dbg	line, "Pads.c", 64
+	.dbg	line, "pads.c", 60
 	jsr     _draw_sprites
 ;
 ; ppu_wait_nmi();
 ;
-	.dbg	line, "Pads.c", 65
+	.dbg	line, "pads.c", 61
 	jsr     _ppu_wait_nmi
 ;
 ; while (1) {
 ;
-	.dbg	line, "Pads.c", 62
+	.dbg	line, "pads.c", 58
 	jmp     L0002
 
 	.dbg	line

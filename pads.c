@@ -1,18 +1,14 @@
-#include "LIB/neslib.h"
-#include "LIB/nesdoug.h"
-#include "Sprites.h"
+#include "lib/neslib.h"
+#include "lib/nesdoug.h"
+#include "sprites.h"
 #include "lungs.h"
 #include "math.h"
-
-typedef struct {
-    int x;
-    int y;
-} Coordinates;
 
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
-Coordinates virusCoordinates = {20, 20};
+Coordinates virusCoordinates = {0, 0};
+Coordinates initialVirusCoordinates = {26, 10};
 
 #pragma bss-name(push, "BSS")
 
@@ -68,11 +64,10 @@ void main(void) {
 }
 
 void draw_sprites() {
-    oam_clear();
     oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
 }
 
 void movement() {
-    virusCoordinates.x = 20 + 128 * sin(get_frame_count());
-    virusCoordinates.y = 20 + 128 * cos(get_frame_count());
+    virusCoordinates.x = initialVirusCoordinates.x + virusPath[get_frame_count()].x;
+    virusCoordinates.y = initialVirusCoordinates.y + virusPath[get_frame_count()].y;
 }
