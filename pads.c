@@ -29,6 +29,8 @@ const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
 };
 
+Coordinates zeroCoordinates = {0, 0};
+Coordinates fortyCoordinates = { 40, 40};
 Coordinates *virusCoordinates;
 Coordinates *initialVirusCoordinates;
 
@@ -63,10 +65,8 @@ void main(void) {
 
     // turn on screen
     ppu_on_all();
-    virusCoordinates->x = 0;
-    virusCoordinates->y = 0;
-    initialVirusCoordinates->x = 20;
-    initialVirusCoordinates->y = 40;
+    virusCoordinates = &zeroCoordinates;
+    initialVirusCoordinates = &fortyCoordinates;
 
 
     while (1) {

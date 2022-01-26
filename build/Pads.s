@@ -10,10 +10,10 @@
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
-	.dbg		file, "pads.c", 2037, 1643169861
+	.dbg		file, "pads.c", 2075, 1643170137
 	.dbg		file, "lib/neslib.h", 9271, 1642938971
 	.dbg		file, "lib/nesdoug.h", 6862, 1642938971
-	.dbg		file, "sprites.h", 592, 1643167916
+	.dbg		file, "sprites.h", 592, 1643169993
 	.dbg		file, "lungs.h", 586, 1642942743
 	.dbg		file, "math.h", 187, 1643086901
 	.forceimport	__STARTUP__
@@ -51,6 +51,8 @@
 	.export		_dbg3
 	.export		_paletteBackground
 	.export		_paletteSprite
+	.export		_zeroCoordinates
+	.export		_fortyCoordinates
 	.export		_virusCoordinates
 	.export		_initialVirusCoordinates
 	.export		_draw_sprites
@@ -65,6 +67,12 @@ _dbg2:
 	.word	$0081
 _dbg3:
 	.word	$0082
+_zeroCoordinates:
+	.word	$0000
+	.word	$0000
+_fortyCoordinates:
+	.word	$0028
+	.word	$0028
 
 .segment	"RODATA"
 
@@ -307,17 +315,17 @@ _initialVirusCoordinates:
 ;
 ; void draw_sprites(Coordinates *virusCoordinates, const unsigned char *virusSprite) {
 ;
-	.dbg	line, "pads.c", 36
+	.dbg	line, "pads.c", 38
 	jsr     pushax
 ;
 ; oam_clear();
 ;
-	.dbg	line, "pads.c", 37
+	.dbg	line, "pads.c", 39
 	jsr     _oam_clear
 ;
 ; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite);
 ;
-	.dbg	line, "pads.c", 38
+	.dbg	line, "pads.c", 40
 	jsr     decsp2
 	ldy     #$05
 	lda     (sp),y
@@ -348,7 +356,7 @@ _initialVirusCoordinates:
 ;
 ; }
 ;
-	.dbg	line, "pads.c", 39
+	.dbg	line, "pads.c", 41
 	jmp     incsp4
 
 	.dbg	line
@@ -372,12 +380,12 @@ _initialVirusCoordinates:
 ;
 ; void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
 ;
-	.dbg	line, "pads.c", 41
+	.dbg	line, "pads.c", 43
 	jsr     pushax
 ;
 ; virusCoordinates->x = initialVirusCoordinates->x + virusPath[get_frame_count()].x;
 ;
-	.dbg	line, "pads.c", 42
+	.dbg	line, "pads.c", 44
 	ldy     #$07
 	jsr     pushwysp
 	ldy     #$05
@@ -410,7 +418,7 @@ _initialVirusCoordinates:
 ;
 ; virusCoordinates->y = initialVirusCoordinates->y + virusPath[get_frame_count()].y;
 ;
-	.dbg	line, "pads.c", 43
+	.dbg	line, "pads.c", 45
 	ldy     #$07
 	jsr     pushwysp
 	ldy     #$05
@@ -443,7 +451,7 @@ _initialVirusCoordinates:
 ;
 ; }
 ;
-	.dbg	line, "pads.c", 44
+	.dbg	line, "pads.c", 46
 	jmp     incsp6
 
 	.dbg	line
@@ -464,101 +472,63 @@ _initialVirusCoordinates:
 ;
 ; ppu_off(); // screen off
 ;
-	.dbg	line, "pads.c", 50
+	.dbg	line, "pads.c", 52
 	jsr     _ppu_off
 ;
 ; pal_bg(paletteBackground);
 ;
-	.dbg	line, "pads.c", 53
+	.dbg	line, "pads.c", 55
 	lda     #<(_paletteBackground)
 	ldx     #>(_paletteBackground)
 	jsr     _pal_bg
 ;
 ; pal_spr(paletteSprite);
 ;
-	.dbg	line, "pads.c", 54
+	.dbg	line, "pads.c", 56
 	lda     #<(_paletteSprite)
 	ldx     #>(_paletteSprite)
 	jsr     _pal_spr
 ;
 ; bank_spr(1);
 ;
-	.dbg	line, "pads.c", 58
+	.dbg	line, "pads.c", 60
 	lda     #$01
 	jsr     _bank_spr
 ;
 ; vram_adr(NAMETABLE_A);
 ;
-	.dbg	line, "pads.c", 60
+	.dbg	line, "pads.c", 62
 	ldx     #$20
 	lda     #$00
 	jsr     _vram_adr
 ;
 ; vram_unrle(lungs);
 ;
-	.dbg	line, "pads.c", 62
+	.dbg	line, "pads.c", 64
 	lda     #<(_lungs)
 	ldx     #>(_lungs)
 	jsr     _vram_unrle
 ;
 ; ppu_on_all();
 ;
-	.dbg	line, "pads.c", 65
+	.dbg	line, "pads.c", 67
 	jsr     _ppu_on_all
 ;
-; virusCoordinates->x = 0;
-;
-	.dbg	line, "pads.c", 66
-	lda     _virusCoordinates+1
-	sta     ptr1+1
-	lda     _virusCoordinates
-	sta     ptr1
-	lda     #$00
-	tay
-	sta     (ptr1),y
-	iny
-	sta     (ptr1),y
-;
-; virusCoordinates->y = 0;
-;
-	.dbg	line, "pads.c", 67
-	lda     _virusCoordinates+1
-	sta     ptr1+1
-	lda     _virusCoordinates
-	sta     ptr1
-	lda     #$00
-	iny
-	sta     (ptr1),y
-	iny
-	sta     (ptr1),y
-;
-; initialVirusCoordinates->x = 20;
+; virusCoordinates = &zeroCoordinates;
 ;
 	.dbg	line, "pads.c", 68
-	lda     _initialVirusCoordinates+1
-	sta     ptr1+1
-	lda     _initialVirusCoordinates
-	sta     ptr1
-	lda     #$14
-	ldy     #$00
-	sta     (ptr1),y
-	iny
-	lda     #$00
-	sta     (ptr1),y
+	lda     #>(_zeroCoordinates)
+	sta     _virusCoordinates+1
+	lda     #<(_zeroCoordinates)
+	sta     _virusCoordinates
 ;
-; initialVirusCoordinates->y = 40;
+; initialVirusCoordinates = &fortyCoordinates;
 ;
 	.dbg	line, "pads.c", 69
-	lda     _initialVirusCoordinates+1
-	sta     ptr1+1
-	lda     _initialVirusCoordinates
-	sta     ptr1
-	lda     #$28
-	iny
-	sta     (ptr1),y
-	iny
-	lda     #$00
-	sta     (ptr1),y
+	lda     #>(_fortyCoordinates)
+	sta     _initialVirusCoordinates+1
+	lda     #<(_fortyCoordinates)
+	sta     _initialVirusCoordinates
 ;
 ; movement(virusCoordinates, initialVirusCoordinates, virusPath);
 ;
