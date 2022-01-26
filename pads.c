@@ -7,8 +7,7 @@
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
-Coordinates virusCoordinates = {0, 0};
-Coordinates initialVirusCoordinates = {26, 10};
+
 
 #pragma bss-name(push, "BSS")
 
@@ -30,11 +29,21 @@ const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
 };
 
+Coordinates *virusCoordinates;
+Coordinates *initialVirusCoordinates;
 
 // PROTOTYPES
-void draw_sprites(void);
+void draw_sprites(Coordinates *virusCoordinates, const unsigned char *virusSprite) {
+    oam_clear();
+    oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite);
+}
 
-void movement(void);
+void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
+    virusCoordinates->x = initialVirusCoordinates->x + virusPath[get_frame_count()].x;
+    virusCoordinates->y = initialVirusCoordinates->y + virusPath[get_frame_count()].y;
+}
+
+
 
 void main(void) {
 
@@ -54,20 +63,16 @@ void main(void) {
 
     // turn on screen
     ppu_on_all();
+    virusCoordinates->x = 0;
+    virusCoordinates->y = 0;
+    initialVirusCoordinates->x = 20;
+    initialVirusCoordinates->y = 40;
+
 
     while (1) {
-        movement();
-        draw_sprites();
+        movement(virusCoordinates, initialVirusCoordinates, virusPath);
+        draw_sprites(virusCoordinates, virus0);
         ppu_wait_nmi();
 //        gray_line();
     }
-}
-
-void draw_sprites() {
-    oam_meta_spr(virusCoordinates.x, virusCoordinates.y, virus);
-}
-
-void movement() {
-    virusCoordinates.x = initialVirusCoordinates.x + virusPath[get_frame_count()].x;
-    virusCoordinates.y = initialVirusCoordinates.y + virusPath[get_frame_count()].y;
 }

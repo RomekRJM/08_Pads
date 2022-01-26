@@ -4,7 +4,7 @@ MATH_S = '../math.s'
 
 
 def compute_function(fun, v):
-    return min(round(72 * fun(radians(v)) + 72), 255)
+    return min(round(8 * fun(radians(v)) + 8), 255)
 
 
 def build_struct():
