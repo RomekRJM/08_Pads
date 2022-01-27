@@ -29,45 +29,69 @@ const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
 };
 
+#define NUM_VIRUSES 12
+
 Coordinates zeroCoordinates = {0, 0};
-Coordinates fortyCoordinates = { 40, 40};
-Coordinates *virusCoordinates;
-Coordinates *initialVirusCoordinates;
+Coordinates fortyCoordinates = {40, 40};
+Coordinates virusCoordinates[NUM_VIRUSES];
+Coordinates initialVirusCoordinates[NUM_VIRUSES];
 
 void initialise_viruses() {
-    initialVirusCoordinates->x = 40;
-    initialVirusCoordinates->y = 40;
+    int i;
+    int virusesInRow = 0;
+    int y = 120;
+    int x = 54;
+
+    for (i = 0; i < NUM_VIRUSES; ++i) {
+        initialVirusCoordinates[i].x = x;
+        initialVirusCoordinates[i].y = y;
+
+        if (virusesInRow < 3) {
+            x += 40;
+            ++virusesInRow;
+        } else {
+            x = 54;
+            y += 20;
+            virusesInRow = 0;
+        }
+    }
 }
 
 void draw_sprites(Coordinates *virusCoordinates) {
     static int virusSprite = 0;
+    int i;
     oam_clear();
 
-    if(get_frame_count() % 8 == 0){
+    if (get_frame_count() % 8 == 0) {
         virusSprite = ++virusSprite % 4;
     }
 
-    switch (virusSprite) {
-        case 0:
-            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite0);
-            break;
-        case 1:
-            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite1);
-            break;
-        case 2:
-            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite2);
-            break;
-        case 3:
-            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite3);
-            break;
+    for (i = 0; i < NUM_VIRUSES; ++i) {
+        switch (virusSprite) {
+            case 0:
+                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite0);
+                break;
+            case 1:
+                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite1);
+                break;
+            case 2:
+                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite2);
+                break;
+            case 3:
+                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite3);
+                break;
+        }
     }
 }
 
 void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
-    virusCoordinates->x = initialVirusCoordinates->x + virusPath[get_frame_count()].x;
-    virusCoordinates->y = initialVirusCoordinates->y + virusPath[get_frame_count()].y;
-}
+    int i;
 
+    for (i = 0; i < NUM_VIRUSES; ++i) {
+        virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
+        virusCoordinates[i].y = initialVirusCoordinates[i].y + virusPath[get_frame_count()].y;
+    }
+}
 
 
 void main(void) {
@@ -88,8 +112,6 @@ void main(void) {
 
     // turn on screen
     ppu_on_all();
-    virusCoordinates = &zeroCoordinates;
-    initialVirusCoordinates = &fortyCoordinates;
     initialise_viruses();
 
 
