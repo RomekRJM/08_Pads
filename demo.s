@@ -10,12 +10,12 @@
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
-	.dbg		file, "pads.c", 2075, 1643170137
+	.dbg		file, "demo.c", 2719, 1643253014
 	.dbg		file, "lib/neslib.h", 9271, 1642938971
 	.dbg		file, "lib/nesdoug.h", 6862, 1642938971
-	.dbg		file, "sprites.h", 592, 1643169993
+	.dbg		file, "sprites.h", 616, 1643251043
 	.dbg		file, "lungs.h", 586, 1642942743
-	.dbg		file, "math.h", 187, 1643086901
+	.dbg		file, "math.h", 186, 1643251894
 	.forceimport	__STARTUP__
 	.dbg		sym, "pal_bg", "00", extern, "_pal_bg"
 	.dbg		sym, "pal_spr", "00", extern, "_pal_spr"
@@ -40,10 +40,10 @@
 	.import		_vram_adr
 	.import		_vram_unrle
 	.import		_get_frame_count
-	.export		_virus0
-	.export		_virus1
-	.export		_virus2
-	.export		_virus3
+	.export		_virusSprite0
+	.export		_virusSprite1
+	.export		_virusSprite2
+	.export		_virusSprite3
 	.export		_lungs
 	.import		_virusPath
 	.export		_dbg1
@@ -55,6 +55,7 @@
 	.export		_fortyCoordinates
 	.export		_virusCoordinates
 	.export		_initialVirusCoordinates
+	.export		_initialise_viruses
 	.export		_draw_sprites
 	.export		_movement
 	.export		_main
@@ -76,7 +77,7 @@ _fortyCoordinates:
 
 .segment	"RODATA"
 
-_virus0:
+_virusSprite0:
 	.byte	$00
 	.byte	$00
 	.byte	$00
@@ -94,7 +95,7 @@ _virus0:
 	.byte	$11
 	.byte	$00
 	.byte	$80
-_virus1:
+_virusSprite1:
 	.byte	$00
 	.byte	$00
 	.byte	$00
@@ -112,7 +113,7 @@ _virus1:
 	.byte	$11
 	.byte	$00
 	.byte	$80
-_virus2:
+_virusSprite2:
 	.byte	$00
 	.byte	$00
 	.byte	$20
@@ -130,7 +131,7 @@ _virus2:
 	.byte	$31
 	.byte	$00
 	.byte	$80
-_virus3:
+_virusSprite3:
 	.byte	$00
 	.byte	$00
 	.byte	$40
@@ -276,8 +277,8 @@ _paletteBackground:
 _paletteSprite:
 	.byte	$0F
 	.byte	$3D
-	.byte	$30
 	.byte	$05
+	.byte	$17
 	.byte	$0F
 	.byte	$3D
 	.byte	$30
@@ -299,7 +300,56 @@ _initialVirusCoordinates:
 	.res	2,$00
 
 ; ---------------------------------------------------------------
-; void __near__ draw_sprites (struct $anon-struct-0001 *virusCoordinates, const unsigned char *virusSprite)
+; void __near__ initialise_viruses (void)
+; ---------------------------------------------------------------
+
+.segment	"CODE"
+
+.proc	_initialise_viruses: near
+
+	.dbg	func, "initialise_viruses", "00", extern, "_initialise_viruses"
+
+.segment	"CODE"
+
+;
+; initialVirusCoordinates->x = 40;
+;
+	.dbg	line, "demo.c", 38
+	lda     _initialVirusCoordinates+1
+	sta     ptr1+1
+	lda     _initialVirusCoordinates
+	sta     ptr1
+	lda     #$28
+	ldy     #$00
+	sta     (ptr1),y
+	iny
+	lda     #$00
+	sta     (ptr1),y
+;
+; initialVirusCoordinates->y = 40;
+;
+	.dbg	line, "demo.c", 39
+	lda     _initialVirusCoordinates+1
+	sta     ptr1+1
+	lda     _initialVirusCoordinates
+	sta     ptr1
+	lda     #$28
+	iny
+	sta     (ptr1),y
+	iny
+	lda     #$00
+	sta     (ptr1),y
+;
+; }
+;
+	.dbg	line, "demo.c", 40
+	rts
+
+	.dbg	line
+.endproc
+
+; ---------------------------------------------------------------
+; void __near__ draw_sprites (struct $anon-struct-0001 *virusCoordinates)
 ; ---------------------------------------------------------------
 
 .segment	"CODE"
@@ -307,59 +357,191 @@ _initialVirusCoordinates:
 .proc	_draw_sprites: near
 
 	.dbg	func, "draw_sprites", "00", extern, "_draw_sprites"
-	.dbg	sym, "virusCoordinates", "00", auto, 2
-	.dbg	sym, "virusSprite", "00", auto, 0
+	.dbg	sym, "virusCoordinates", "00", auto, 0
 
 .segment	"CODE"
 
 ;
-; void draw_sprites(Coordinates *virusCoordinates, const unsigned char *virusSprite) {
+; void draw_sprites(Coordinates *virusCoordinates) {
 ;
-	.dbg	line, "pads.c", 38
+	.dbg	line, "demo.c", 42
 	jsr     pushax
 ;
 ; oam_clear();
 ;
-	.dbg	line, "pads.c", 39
+	.dbg	line, "demo.c", 44
 	jsr     _oam_clear
 ;
-; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite);
+; if(get_frame_count() % 8 == 0){
 ;
-	.dbg	line, "pads.c", 40
-	jsr     decsp2
-	ldy     #$05
-	lda     (sp),y
-	sta     ptr1+1
-	dey
-	lda     (sp),y
-	sta     ptr1
-	ldy     #$00
-	lda     (ptr1),y
-	iny
-	sta     (sp),y
-	ldy     #$05
-	lda     (sp),y
-	sta     ptr1+1
-	dey
-	lda     (sp),y
-	sta     ptr1
-	ldy     #$02
-	lda     (ptr1),y
-	ldy     #$00
-	sta     (sp),y
-	ldy     #$03
-	lda     (sp),y
-	tax
-	dey
-	lda     (sp),y
-	jsr     _oam_meta_spr
+	.dbg	line, "demo.c", 46
+	jsr     _get_frame_count
+	and     #$07
+	bne     L0002
+;
+; virusSprite = ++virusSprite % 4;
+;
+	.dbg	line, "demo.c", 47
+	inc     M0001
+	bne     L0004
+	inc     M0001+1
+L0004:	lda     M0001
+	ldx     M0001+1
+	jsr     pushax
+	ldx     #$00
+	lda     #$04
+	jsr     tosmoda0
+	sta     M0001
+	stx     M0001+1
+;
+; switch (virusSprite) {
+;
+	.dbg	line, "demo.c", 50
+L0002:	lda     M0001
+	ldx     M0001+1
 ;
 ; }
 ;
-	.dbg	line, "pads.c", 41
-	jmp     incsp4
+	.dbg	line, "demo.c", 63
+	cpx     #$00
+	jne     L0006
+	cmp     #$00
+	beq     L0007
+	cmp     #$01
+	beq     L0008
+	cmp     #$02
+	beq     L0009
+	cmp     #$03
+	jeq     L000A
+	jmp     L0006
+;
+; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite0);
+;
+	.dbg	line, "demo.c", 52
+L0007:	jsr     decsp2
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1,x)
+	dey
+	sta     (sp),y
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1),y
+	ldy     #$00
+	sta     (sp),y
+	lda     #<(_virusSprite0)
+	ldx     #>(_virusSprite0)
+;
+; break;
+;
+	.dbg	line, "demo.c", 53
+	jmp     L000B
+;
+; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite1);
+;
+	.dbg	line, "demo.c", 55
+L0008:	jsr     decsp2
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1,x)
+	dey
+	sta     (sp),y
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1),y
+	ldy     #$00
+	sta     (sp),y
+	lda     #<(_virusSprite1)
+	ldx     #>(_virusSprite1)
+;
+; break;
+;
+	.dbg	line, "demo.c", 56
+	jmp     L000B
+;
+; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite2);
+;
+	.dbg	line, "demo.c", 58
+L0009:	jsr     decsp2
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1,x)
+	dey
+	sta     (sp),y
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1),y
+	ldy     #$00
+	sta     (sp),y
+	lda     #<(_virusSprite2)
+	ldx     #>(_virusSprite2)
+;
+; break;
+;
+	.dbg	line, "demo.c", 59
+	jmp     L000B
+;
+; oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite3);
+;
+	.dbg	line, "demo.c", 61
+L000A:	jsr     decsp2
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1,x)
+	dey
+	sta     (sp),y
+	ldy     #$03
+	lda     (sp),y
+	sta     ptr1+1
+	dey
+	lda     (sp),y
+	sta     ptr1
+	lda     (ptr1),y
+	ldy     #$00
+	sta     (sp),y
+	lda     #<(_virusSprite3)
+	ldx     #>(_virusSprite3)
+L000B:	jsr     _oam_meta_spr
+;
+; }
+;
+	.dbg	line, "demo.c", 64
+L0006:	jmp     incsp2
 
 	.dbg	line
+.segment	"DATA"
+
+M0001:
+	.word	$0000
+
 .endproc
 
 ; ---------------------------------------------------------------
@@ -380,12 +562,12 @@ _initialVirusCoordinates:
 ;
 ; void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
 ;
-	.dbg	line, "pads.c", 43
+	.dbg	line, "demo.c", 66
 	jsr     pushax
 ;
 ; virusCoordinates->x = initialVirusCoordinates->x + virusPath[get_frame_count()].x;
 ;
-	.dbg	line, "pads.c", 44
+	.dbg	line, "demo.c", 67
 	ldy     #$07
 	jsr     pushwysp
 	ldy     #$05
@@ -418,7 +600,7 @@ _initialVirusCoordinates:
 ;
 ; virusCoordinates->y = initialVirusCoordinates->y + virusPath[get_frame_count()].y;
 ;
-	.dbg	line, "pads.c", 45
+	.dbg	line, "demo.c", 68
 	ldy     #$07
 	jsr     pushwysp
 	ldy     #$05
@@ -451,7 +633,7 @@ _initialVirusCoordinates:
 ;
 ; }
 ;
-	.dbg	line, "pads.c", 46
+	.dbg	line, "demo.c", 69
 	jmp     incsp6
 
 	.dbg	line
@@ -472,51 +654,51 @@ _initialVirusCoordinates:
 ;
 ; ppu_off(); // screen off
 ;
-	.dbg	line, "pads.c", 52
+	.dbg	line, "demo.c", 75
 	jsr     _ppu_off
 ;
 ; pal_bg(paletteBackground);
 ;
-	.dbg	line, "pads.c", 55
+	.dbg	line, "demo.c", 78
 	lda     #<(_paletteBackground)
 	ldx     #>(_paletteBackground)
 	jsr     _pal_bg
 ;
 ; pal_spr(paletteSprite);
 ;
-	.dbg	line, "pads.c", 56
+	.dbg	line, "demo.c", 79
 	lda     #<(_paletteSprite)
 	ldx     #>(_paletteSprite)
 	jsr     _pal_spr
 ;
 ; bank_spr(1);
 ;
-	.dbg	line, "pads.c", 60
+	.dbg	line, "demo.c", 83
 	lda     #$01
 	jsr     _bank_spr
 ;
 ; vram_adr(NAMETABLE_A);
 ;
-	.dbg	line, "pads.c", 62
+	.dbg	line, "demo.c", 85
 	ldx     #$20
 	lda     #$00
 	jsr     _vram_adr
 ;
 ; vram_unrle(lungs);
 ;
-	.dbg	line, "pads.c", 64
+	.dbg	line, "demo.c", 87
 	lda     #<(_lungs)
 	ldx     #>(_lungs)
 	jsr     _vram_unrle
 ;
 ; ppu_on_all();
 ;
-	.dbg	line, "pads.c", 67
+	.dbg	line, "demo.c", 90
 	jsr     _ppu_on_all
 ;
 ; virusCoordinates = &zeroCoordinates;
 ;
-	.dbg	line, "pads.c", 68
+	.dbg	line, "demo.c", 91
 	lda     #>(_zeroCoordinates)
 	sta     _virusCoordinates+1
 	lda     #<(_zeroCoordinates)
@@ -524,15 +706,20 @@ _initialVirusCoordinates:
 ;
 ; initialVirusCoordinates = &fortyCoordinates;
 ;
-	.dbg	line, "pads.c", 69
+	.dbg	line, "demo.c", 92
 	lda     #>(_fortyCoordinates)
 	sta     _initialVirusCoordinates+1
 	lda     #<(_fortyCoordinates)
 	sta     _initialVirusCoordinates
 ;
+; initialise_viruses();
+;
+	.dbg	line, "demo.c", 93
+	jsr     _initialise_viruses
+;
 ; movement(virusCoordinates, initialVirusCoordinates, virusPath);
 ;
-	.dbg	line, "pads.c", 73
+	.dbg	line, "demo.c", 97
 L0002:	jsr     decsp4
 	lda     _virusCoordinates
 	ldy     #$02
@@ -550,24 +737,21 @@ L0002:	jsr     decsp4
 	ldx     #>(_virusPath)
 	jsr     _movement
 ;
-; draw_sprites(virusCoordinates, virus0);
+; draw_sprites(virusCoordinates);
 ;
-	.dbg	line, "pads.c", 74
+	.dbg	line, "demo.c", 98
 	lda     _virusCoordinates
 	ldx     _virusCoordinates+1
-	jsr     pushax
-	lda     #<(_virus0)
-	ldx     #>(_virus0)
 	jsr     _draw_sprites
 ;
 ; ppu_wait_nmi();
 ;
-	.dbg	line, "pads.c", 75
+	.dbg	line, "demo.c", 99
 	jsr     _ppu_wait_nmi
 ;
 ; while (1) {
 ;
-	.dbg	line, "pads.c", 72
+	.dbg	line, "demo.c", 96
 	jmp     L0002
 
 	.dbg	line

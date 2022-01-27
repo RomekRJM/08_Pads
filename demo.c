@@ -23,7 +23,7 @@ const char paletteBackground[] = {
 };
 
 const char paletteSprite[] = {
-        0x0f, 0x3d, 0x30, 0x05,
+        0x0f, 0x3d, 0x05, 0x17,
         0x0f, 0x3d, 0x30, 0x05,
         0x0f, 0x3d, 0x30, 0x05,
         0x0f, 0x3d, 0x30, 0x05,
@@ -34,10 +34,33 @@ Coordinates fortyCoordinates = { 40, 40};
 Coordinates *virusCoordinates;
 Coordinates *initialVirusCoordinates;
 
-// PROTOTYPES
-void draw_sprites(Coordinates *virusCoordinates, const unsigned char *virusSprite) {
+void initialise_viruses() {
+    initialVirusCoordinates->x = 40;
+    initialVirusCoordinates->y = 40;
+}
+
+void draw_sprites(Coordinates *virusCoordinates) {
+    static int virusSprite = 0;
     oam_clear();
-    oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite);
+
+    if(get_frame_count() % 8 == 0){
+        virusSprite = ++virusSprite % 4;
+    }
+
+    switch (virusSprite) {
+        case 0:
+            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite0);
+            break;
+        case 1:
+            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite1);
+            break;
+        case 2:
+            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite2);
+            break;
+        case 3:
+            oam_meta_spr(virusCoordinates->x, virusCoordinates->y, virusSprite3);
+            break;
+    }
 }
 
 void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
@@ -67,11 +90,12 @@ void main(void) {
     ppu_on_all();
     virusCoordinates = &zeroCoordinates;
     initialVirusCoordinates = &fortyCoordinates;
+    initialise_viruses();
 
 
     while (1) {
         movement(virusCoordinates, initialVirusCoordinates, virusPath);
-        draw_sprites(virusCoordinates, virus0);
+        draw_sprites(virusCoordinates);
         ppu_wait_nmi();
 //        gray_line();
     }

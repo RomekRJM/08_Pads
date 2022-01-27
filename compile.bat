@@ -1,6 +1,6 @@
 @echo off
 
-set name="pads"
+set name="demo"
 
 set path=%path%;..\bin\
 
@@ -15,10 +15,4 @@ ld65 -C nrom_32k_vert.cfg -o %name%.nes math.o crt0.o %name%.o nes.lib -Ln label
 
 del *.o
 
-move /Y labels.txt build\
-move /Y %name%.s build\
-move /Y %name%.nes build\
-move /Y %name%.dbg build\
-
-
-build\%name%.nes
+%name%.nes

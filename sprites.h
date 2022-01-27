@@ -1,4 +1,4 @@
-const unsigned char virus0[] = {
+const unsigned char virusSprite0[] = {
         0, 0, 0x00, 0,
         8, 0, 0x01, 0,
         0, 8, 0x10, 0,
@@ -6,7 +6,7 @@ const unsigned char virus0[] = {
         128
 };
 
-const unsigned char virus1[] = {
+const unsigned char virusSprite1[] = {
         0, 0, 0x00, 0,
         8, 0, 0x01, 0,
         0, 8, 0x10, 0,
@@ -14,7 +14,7 @@ const unsigned char virus1[] = {
         128
 };
 
-const unsigned char virus2[] = {
+const unsigned char virusSprite2[] = {
         0, 0, 0x20, 0,
         8, 0, 0x21, 0,
         0, 8, 0x30, 0,
@@ -22,7 +22,7 @@ const unsigned char virus2[] = {
         128
 };
 
-const unsigned char virus3[] = {
+const unsigned char virusSprite3[] = {
         0, 0, 0x40, 0,
         8, 0, 0x41, 0,
         0, 8, 0x50, 0,

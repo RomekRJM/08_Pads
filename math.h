@@ -6,7 +6,7 @@ typedef struct {
     int y;
 } Coordinates;
 
-extern Coordinates virusPath[256];
+extern Coordinates virusPath[64];
 
 #endif //INC_08_PADS_MATH_H
 
