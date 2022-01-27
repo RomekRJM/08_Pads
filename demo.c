@@ -31,12 +31,7 @@ const char paletteSprite[] = {
 
 #define NUM_VIRUSES 16
 
-Coordinates zeroCoordinates = {0, 0};
-Coordinates fortyCoordinates = {40, 40};
-Coordinates virusCoordinates[NUM_VIRUSES];
-Coordinates initialVirusCoordinates[NUM_VIRUSES];
-
-void initialise_viruses() {
+void initialise_viruses(Coordinates *initialVirusCoordinates) {
     int i;
     int virusesInRow = 0;
     int y = 120;
@@ -54,6 +49,15 @@ void initialise_viruses() {
             y += 20;
             virusesInRow = 0;
         }
+    }
+}
+
+void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
+    int i;
+
+    for (i = 0; i < NUM_VIRUSES; ++i) {
+        virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
+        virusCoordinates[i].y = initialVirusCoordinates[i].y + virusPath[get_frame_count()].y;
     }
 }
 
@@ -84,17 +88,9 @@ void draw_sprites(Coordinates *virusCoordinates) {
     }
 }
 
-void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
-    int i;
-
-    for (i = 0; i < NUM_VIRUSES; ++i) {
-        virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
-        virusCoordinates[i].y = initialVirusCoordinates[i].y + virusPath[get_frame_count()].y;
-    }
-}
-
-
 void main(void) {
+    Coordinates virusCoordinates[NUM_VIRUSES];
+    Coordinates initialVirusCoordinates[NUM_VIRUSES];
 
     ppu_off(); // screen off
 
@@ -112,7 +108,7 @@ void main(void) {
 
     // turn on screen
     ppu_on_all();
-    initialise_viruses();
+    initialise_viruses(initialVirusCoordinates);
 
 
     while (1) {
