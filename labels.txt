@@ -4,7 +4,7 @@ al 000001 .NES_MIRRORING
 al 000002 .NES_PRG_BANKS
 al 000310 .__BSS_LOAD__
 al 000310 .__BSS_RUN__
-al 000060 .__BSS_SIZE__
+al 000080 .__BSS_SIZE__
 al 0086DD .__CODE_LOAD__
 al 0086DD .__CODE_RUN__
 al 000F31 .__CODE_SIZE__
@@ -16,7 +16,7 @@ al 010000 .__PRG_LAST__
 al 008000 .__PRG_SIZE__
 al 008000 .__PRG_START__
 al 000000 .__RAM_FILEOFFS__
-al 000370 .__RAM_LAST__
+al 000390 .__RAM_LAST__
 al 000500 .__RAM_SIZE__
 al 000300 .__RAM_START__
 al 00960E .__RODATA_LOAD__
@@ -55,7 +55,7 @@ al 00875E ._get_frame_count
 al 008757 ._get_pad_new
 al 008850 ._get_ppu_addr
 al 008A75 ._gray_line
-al 000340 ._initialVirusCoordinates
+al 000350 ._initialVirusCoordinates
 al 009097 ._initialise_viruses
 al 009A52 ._lungs
 al 0093EA ._main
@@ -495,7 +495,7 @@ al 0093EA ._main
 al 0092FD ._movement
 al 00915A ._draw_sprites
 al 009097 ._initialise_viruses
-al 000340 ._initialVirusCoordinates
+al 000350 ._initialVirusCoordinates
 al 000310 ._virusCoordinates
 al 00030A ._fortyCoordinates
 al 000306 ._zeroCoordinates

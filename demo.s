@@ -10,11 +10,11 @@
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
-	.dbg		file, "demo.c", 3209, 1643255047
+	.dbg		file, "demo.c", 3209, 1643256201
 	.dbg		file, "lib/neslib.h", 9271, 1642938971
 	.dbg		file, "lib/nesdoug.h", 6862, 1642938971
 	.dbg		file, "sprites.h", 616, 1643251043
-	.dbg		file, "lungs.h", 586, 1643255317
+	.dbg		file, "lungs.h", 744, 1643255373
 	.dbg		file, "math.h", 186, 1643251894
 	.forceimport	__STARTUP__
 	.dbg		sym, "pal_bg", "00", extern, "_pal_bg"
@@ -295,9 +295,9 @@ _paletteSprite:
 .segment	"BSS"
 
 _virusCoordinates:
-	.res	48,$00
+	.res	64,$00
 _initialVirusCoordinates:
-	.res	48,$00
+	.res	64,$00
 
 ; ---------------------------------------------------------------
 ; void __near__ initialise_viruses (void)
@@ -347,7 +347,7 @@ L0002:	ldy     #$07
 	tax
 	dey
 	lda     (sp),y
-	cmp     #$0C
+	cmp     #$10
 	txa
 	sbc     #$00
 	bvc     L0006
@@ -544,7 +544,7 @@ L0005:	ldy     #$01
 	tax
 	dey
 	lda     (sp),y
-	cmp     #$0C
+	cmp     #$10
 	txa
 	sbc     #$00
 	bvc     L0009
@@ -817,7 +817,7 @@ L0002:	ldy     #$01
 	tax
 	dey
 	lda     (sp),y
-	cmp     #$0C
+	cmp     #$10
 	txa
 	sbc     #$00
 	bvc     L0006
@@ -1041,7 +1041,7 @@ L0002:	jsr     decsp4
 ;
 ; ppu_wait_nmi();
 ;
-	.dbg	line, "demo.c", 121
+	.dbg	line, "demo.c", 122
 	jsr     _ppu_wait_nmi
 ;
 ; while (1) {

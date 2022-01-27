@@ -29,7 +29,7 @@ const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
 };
 
-#define NUM_VIRUSES 12
+#define NUM_VIRUSES 16
 
 Coordinates zeroCoordinates = {0, 0};
 Coordinates fortyCoordinates = {40, 40};
@@ -118,7 +118,7 @@ void main(void) {
     while (1) {
         movement(virusCoordinates, initialVirusCoordinates, virusPath);
         draw_sprites(virusCoordinates);
-        ppu_wait_nmi();
 //        gray_line();
+        ppu_wait_nmi();
     }
 }
