@@ -88,10 +88,7 @@ void draw_sprites(Coordinates *virusCoordinates) {
     }
 }
 
-void main(void) {
-    Coordinates virusCoordinates[NUM_VIRUSES];
-    Coordinates initialVirusCoordinates[NUM_VIRUSES];
-
+void init_nes() {
     ppu_off(); // screen off
 
     // load the palettes
@@ -108,6 +105,14 @@ void main(void) {
 
     // turn on screen
     ppu_on_all();
+}
+
+void main(void) {
+    Coordinates virusCoordinates[NUM_VIRUSES];
+    Coordinates initialVirusCoordinates[NUM_VIRUSES];
+
+    init_nes();
+
     initialise_viruses(initialVirusCoordinates);
 
 
