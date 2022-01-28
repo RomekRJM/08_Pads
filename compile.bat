@@ -6,7 +6,7 @@ set path=%path%;..\bin\
 
 set CC65_HOME=..\
 
-cc65 -Oirs %name%.c --add-source -g
+cc65 %name%.c --add-source -g
 ca65 crt0.s -g
 ca65 math.s -g
 ca65 %name%.s -g
