@@ -2,11 +2,11 @@
 #define INC_08_PADS_MATH_H
 
 typedef struct {
-    int x;
-    int y;
+    unsigned char x;
+    unsigned char y;
 } Coordinates;
 
-extern Coordinates virusPath[64];
+extern Coordinates virusPath[256];
 
 #endif //INC_08_PADS_MATH_H
 

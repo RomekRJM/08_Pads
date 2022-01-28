@@ -14,8 +14,8 @@ Coordinates initialVirusCoordinates[NUM_VIRUSES];
 
 #pragma bss-name(push, "BSS")
 
-volatile unsigned int *dbg1 = (volatile unsigned int *) 0x80;
-volatile unsigned int *dbg2 = (volatile unsigned int *) 0x81;
+volatile unsigned char *dbg1 = (volatile unsigned char *) 0x80;
+volatile unsigned char *dbg2 = (volatile unsigned char *) 0x81;
 volatile unsigned char *dbg3 = (volatile unsigned char *) 0x82;
 
 const char paletteBackground[] = {
@@ -33,10 +33,10 @@ const char paletteSprite[] = {
 };
 
 void initialise_viruses() {
-    int i;
-    int virusesInRow = 0;
-    int y = 120;
-    int x = 54;
+    unsigned char i;
+    unsigned char virusesInRow = 0;
+    unsigned char y = 120;
+    unsigned char x = 54;
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
         initialVirusCoordinates[i].x = x;
@@ -54,7 +54,7 @@ void initialise_viruses() {
 }
 
 void movement() {
-    int i;
+    unsigned char i;
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
         virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
@@ -63,8 +63,8 @@ void movement() {
 }
 
 void draw_sprites() {
-    static int virusSprite = 0;
-    int i;
+    static unsigned char virusSprite = 0;
+    unsigned char i;
     oam_clear();
 
     if (get_frame_count() % 8 == 0) {

@@ -8,14 +8,12 @@ def compute_function(fun, v):
 
 
 def build_struct(size):
-    values = ['    '] * (size * 4)
+    values = ['    '] * (size * 2)
     v = 0
 
     for x in range(size):
-        values[x*4] += '.byte ' + str(compute_function(sin, v))
-        values[x*4+1] += '.byte 00'
-        values[x*4+2] += '.byte ' + str(compute_function(cos, v))
-        values[x*4+3] += '.byte 00'
+        values[x*2] += '.byte ' + str(compute_function(sin, v))
+        values[x*2+1] += '.byte ' + str(compute_function(cos, v))
         v = v + 1.40625 * 256 / size
 
     return "\n".join(values)
@@ -30,5 +28,5 @@ if __name__ == '__main__':
     write_to_file('.segment	"RODATA"\n', 'w')
     write_to_file('.export		_virusPath\n')
     write_to_file('_virusPath:\n\n')
-    write_to_file(build_struct(32))
+    write_to_file(build_struct(256))
     write_to_file('\n')
