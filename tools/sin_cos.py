@@ -12,8 +12,11 @@ def build_struct(size):
     v = 0
 
     for x in range(size):
-        values[x*2] += '.byte ' + str(compute_function(sin, v))
-        values[x*2+1] += '.byte ' + str(compute_function(cos, v))
+        values[x] += '.byte ' + str(compute_function(sin, v))
+        v = v + 1.40625 * 256 / size
+
+    for x in range(size, 2*size):
+        values[x] += '.byte ' + str(compute_function(cos, v))
         v = v + 1.40625 * 256 / size
 
     return "\n".join(values)

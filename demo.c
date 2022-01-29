@@ -4,13 +4,11 @@
 #include "lungs.h"
 #include "math.h"
 
-#define NUM_VIRUSES 16
-
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
-Coordinates virusCoordinates[NUM_VIRUSES];
-Coordinates initialVirusCoordinates[NUM_VIRUSES];
+VirusCoordinates virusCoordinates;
+VirusCoordinates initialVirusCoordinates;
 
 #pragma bss-name(push, "BSS")
 
@@ -39,8 +37,8 @@ void initialise_viruses() {
     unsigned char x = 54;
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
-        initialVirusCoordinates[i].x = x;
-        initialVirusCoordinates[i].y = y;
+        initialVirusCoordinates.x[i] = x;
+        initialVirusCoordinates.y[i] = y;
 
         if (virusesInRow < 3) {
             x += 40;
@@ -57,8 +55,8 @@ void movement() {
     unsigned char i;
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
-        virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
-        virusCoordinates[i].y = initialVirusCoordinates[i].y + virusPath[get_frame_count()].y;
+        virusCoordinates.x[i] = initialVirusCoordinates.x[i] + virusPath.x[get_frame_count()];
+        virusCoordinates.y[i] = initialVirusCoordinates.y[i] + virusPath.y[get_frame_count()];
     }
 }
 
@@ -74,16 +72,16 @@ void draw_sprites() {
     for (i = 0; i < NUM_VIRUSES; ++i) {
         switch (virusSprite) {
             case 0:
-                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite0);
+                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite0);
                 break;
             case 1:
-                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite1);
+                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite1);
                 break;
             case 2:
-                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite2);
+                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite2);
                 break;
             case 3:
-                oam_meta_spr(virusCoordinates[i].x, virusCoordinates[i].y, virusSprite3);
+                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite3);
                 break;
         }
     }
