@@ -55,15 +55,133 @@ void initialise_viruses() {
 }
 
 void movement() {
-    for (i = 0; i < NUM_VIRUSES; ++i) {
-        path = virusPath.x[get_frame_count()];
-        initial = initialVirusCoordinates.x[i];
-        virusCoordinates.x[i] = initial + path;
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[0];
+    virusCoordinates.x[0] = initial + path;
 
-        path = virusPath.y[get_frame_count()];
-        initial = initialVirusCoordinates.y[i];
-        virusCoordinates.y[i] = initial + path;
-    }
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[0];
+    virusCoordinates.y[0] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[1];
+    virusCoordinates.x[1] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[1];
+    virusCoordinates.y[1] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[2];
+    virusCoordinates.x[2] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[2];
+    virusCoordinates.y[2] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[3];
+    virusCoordinates.x[3] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[3];
+    virusCoordinates.y[3] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[4];
+    virusCoordinates.x[4] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[4];
+    virusCoordinates.y[4] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[5];
+    virusCoordinates.x[5] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[5];
+    virusCoordinates.y[5] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[6];
+    virusCoordinates.x[6] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[6];
+    virusCoordinates.y[6] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[7];
+    virusCoordinates.x[7] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[7];
+    virusCoordinates.y[7] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[8];
+    virusCoordinates.x[8] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[8];
+    virusCoordinates.y[8] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[9];
+    virusCoordinates.x[9] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[9];
+    virusCoordinates.y[9] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[10];
+    virusCoordinates.x[10] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[10];
+    virusCoordinates.y[10] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[11];
+    virusCoordinates.x[11] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[11];
+    virusCoordinates.y[11] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[12];
+    virusCoordinates.x[12] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[12];
+    virusCoordinates.y[12] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[13];
+    virusCoordinates.x[13] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[13];
+    virusCoordinates.y[13] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[14];
+    virusCoordinates.x[14] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[14];
+    virusCoordinates.y[14] = initial + path;
+
+    path = virusPath.x[get_frame_count()];
+    initial = initialVirusCoordinates.x[15];
+    virusCoordinates.x[15] = initial + path;
+
+    path = virusPath.y[get_frame_count()];
+    initial = initialVirusCoordinates.y[15];
+    virusCoordinates.y[15] = initial + path;
 }
 
 void draw_sprites() {
@@ -75,9 +193,23 @@ void draw_sprites() {
 
     sprite = virusSpriteLookup[virusSprite];
 
-    for (i = 0; i < NUM_VIRUSES; ++i) {
-        oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], sprite);
-    }
+    oam_meta_spr(virusCoordinates.x[0], virusCoordinates.y[0], sprite);
+    oam_meta_spr(virusCoordinates.x[1], virusCoordinates.y[1], sprite);
+    oam_meta_spr(virusCoordinates.x[2], virusCoordinates.y[2], sprite);
+    oam_meta_spr(virusCoordinates.x[3], virusCoordinates.y[3], sprite);
+    oam_meta_spr(virusCoordinates.x[4], virusCoordinates.y[4], sprite);
+    oam_meta_spr(virusCoordinates.x[5], virusCoordinates.y[5], sprite);
+    oam_meta_spr(virusCoordinates.x[6], virusCoordinates.y[6], sprite);
+    oam_meta_spr(virusCoordinates.x[7], virusCoordinates.y[7], sprite);
+    oam_meta_spr(virusCoordinates.x[8], virusCoordinates.y[8], sprite);
+    oam_meta_spr(virusCoordinates.x[9], virusCoordinates.y[9], sprite);
+    oam_meta_spr(virusCoordinates.x[10], virusCoordinates.y[10], sprite);
+    oam_meta_spr(virusCoordinates.x[11], virusCoordinates.y[11], sprite);
+    oam_meta_spr(virusCoordinates.x[12], virusCoordinates.y[12], sprite);
+    oam_meta_spr(virusCoordinates.x[13], virusCoordinates.y[13], sprite);
+    oam_meta_spr(virusCoordinates.x[14], virusCoordinates.y[14], sprite);
+    oam_meta_spr(virusCoordinates.x[15], virusCoordinates.y[15], sprite);
+
 }
 
 void init_nes() {
