@@ -10,7 +10,7 @@
 	.importzp	sp, sreg, regsave, regbank
 	.importzp	tmp1, tmp2, tmp3, tmp4, ptr1, ptr2, ptr3, ptr4
 	.macpack	longbranch
-	.dbg		file, "demo.c", 2999, 1643431748
+	.dbg		file, "demo.c", 3001, 1643432772
 	.dbg		file, "lib/neslib.h", 9271, 1642938971
 	.dbg		file, "lib/nesdoug.h", 6862, 1642938971
 	.dbg		file, "sprites.h", 616, 1643251043
@@ -543,14 +543,14 @@ L0003:	jmp     incsp1
 	jsr     decsp1
 	jsr     _oam_clear
 ;
-; if (get_frame_count() % 8 == 0) {
+; if ((get_frame_count() & 7) == 0) {
 ;
 	.dbg	line, "demo.c", 68
 	jsr     _get_frame_count
 	and     #$07
 	bne     L0018
 ;
-; virusSprite = ++virusSprite % 4;
+; virusSprite = ++virusSprite & 3;
 ;
 	.dbg	line, "demo.c", 69
 	inc     M0001

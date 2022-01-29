@@ -30,9 +30,9 @@ file	id=3,name="lib/neslib.s",size=15919,mtime=0x61ED425B,mod=1
 file	id=4,name="lib/nesdoug.s",size=12431,mtime=0x61ED425B,mod=1
 file	id=5,name="music/famitone2.s",size=28839,mtime=0x61ED425B,mod=1
 file	id=6,name="Alpha3.chr",size=8192,mtime=0x61F0C8C9,mod=1
-file	id=7,name="demo.s",size=13564,mtime=0x61F4C823,mod=2
+file	id=7,name="demo.s",size=13566,mtime=0x61F4CBEB,mod=2
 file	id=8,name="C:\cc65\asminc/longbranch.mac",size=2632,mtime=0x61606595,mod=2
-file	id=9,name="demo.c",size=2999,mtime=0x61F4C744,mod=2
+file	id=9,name="demo.c",size=3001,mtime=0x61F4CB44,mod=2
 file	id=10,name="lib/neslib.h",size=9271,mtime=0x61ED425B,mod=2
 file	id=11,name="lib/nesdoug.h",size=6862,mtime=0x61ED425B,mod=2
 file	id=12,name="sprites.h",size=616,mtime=0x61F20563,mod=2

@@ -65,8 +65,8 @@ void draw_sprites() {
     unsigned char i;
     oam_clear();
 
-    if (get_frame_count() % 8 == 0) {
-        virusSprite = ++virusSprite % 4;
+    if ((get_frame_count() & 7) == 0) {
+        virusSprite = ++virusSprite & 3;
     }
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
