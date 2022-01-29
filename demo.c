@@ -14,6 +14,8 @@ unsigned char virusesInRow = 0;
 unsigned char y = 120;
 unsigned char x = 54;
 unsigned char i;
+unsigned char initial;
+unsigned char path;
 
 #pragma bss-name(push, "BSS")
 
@@ -53,8 +55,13 @@ void initialise_viruses() {
 
 void movement() {
     for (i = 0; i < NUM_VIRUSES; ++i) {
-        virusCoordinates.x[i] = initialVirusCoordinates.x[i] + virusPath.x[get_frame_count()];
-        virusCoordinates.y[i] = initialVirusCoordinates.y[i] + virusPath.y[get_frame_count()];
+        path = virusPath.x[get_frame_count()];
+        initial = initialVirusCoordinates.x[i];
+        virusCoordinates.x[i] = initial + path;
+
+        path = virusPath.y[get_frame_count()];
+        initial = initialVirusCoordinates.y[i];
+        virusCoordinates.y[i] = initial + path;
     }
 }
 
