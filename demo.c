@@ -16,6 +16,7 @@ unsigned char x = 54;
 unsigned char i;
 unsigned char initial;
 unsigned char path;
+const unsigned char *sprite;
 
 #pragma bss-name(push, "BSS")
 
@@ -72,21 +73,10 @@ void draw_sprites() {
         virusSprite = ++virusSprite & 3;
     }
 
+    sprite = virusSpriteLookup[virusSprite];
+
     for (i = 0; i < NUM_VIRUSES; ++i) {
-        switch (virusSprite) {
-            case 0:
-                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite0);
-                break;
-            case 1:
-                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite1);
-                break;
-            case 2:
-                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite2);
-                break;
-            case 3:
-                oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], virusSprite3);
-                break;
-        }
+        oam_meta_spr(virusCoordinates.x[i], virusCoordinates.y[i], sprite);
     }
 }
 

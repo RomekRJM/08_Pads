@@ -29,3 +29,7 @@ const unsigned char virusSprite3[] = {
         8, 8, 0x51, 0,
         128
 };
+
+const unsigned char *virusSpriteLookup[] = {
+        virusSprite0, virusSprite1, virusSprite2, virusSprite3
+};
