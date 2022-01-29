@@ -9,6 +9,11 @@
 // GLOBAL VARIABLES
 VirusCoordinates virusCoordinates;
 VirusCoordinates initialVirusCoordinates;
+unsigned char virusSprite = 0;
+unsigned char virusesInRow = 0;
+unsigned char y = 120;
+unsigned char x = 54;
+unsigned char i;
 
 #pragma bss-name(push, "BSS")
 
@@ -31,11 +36,6 @@ const char paletteSprite[] = {
 };
 
 void initialise_viruses() {
-    unsigned char i;
-    unsigned char virusesInRow = 0;
-    unsigned char y = 120;
-    unsigned char x = 54;
-
     for (i = 0; i < NUM_VIRUSES; ++i) {
         initialVirusCoordinates.x[i] = x;
         initialVirusCoordinates.y[i] = y;
@@ -52,8 +52,6 @@ void initialise_viruses() {
 }
 
 void movement() {
-    unsigned char i;
-
     for (i = 0; i < NUM_VIRUSES; ++i) {
         virusCoordinates.x[i] = initialVirusCoordinates.x[i] + virusPath.x[get_frame_count()];
         virusCoordinates.y[i] = initialVirusCoordinates.y[i] + virusPath.y[get_frame_count()];
@@ -61,8 +59,6 @@ void movement() {
 }
 
 void draw_sprites() {
-    static unsigned char virusSprite = 0;
-    unsigned char i;
     oam_clear();
 
     if ((get_frame_count() & 7) == 0) {
