@@ -3,1026 +3,514 @@
 _virusPath:
 
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 11
-    .byte 00
     .byte 16
-    .byte 00
     .byte 11
-    .byte 00
     .byte 16
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 13
-    .byte 00
     .byte 15
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 14
-    .byte 00
     .byte 13
-    .byte 00
     .byte 15
-    .byte 00
     .byte 13
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 12
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 15
-    .byte 00
     .byte 11
-    .byte 00
     .byte 16
-    .byte 00
     .byte 11
-    .byte 00
     .byte 16
-    .byte 00
     .byte 11
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 10
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 9
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 5
-    .byte 00
     .byte 16
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 2
-    .byte 00
     .byte 14
-    .byte 00
     .byte 2
-    .byte 00
     .byte 14
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 0
-    .byte 00
     .byte 11
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 5
-    .byte 00
     .byte 0
-    .byte 00
     .byte 5
-    .byte 00
     .byte 0
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 3
-    .byte 00
     .byte 1
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 2
-    .byte 00
     .byte 3
-    .byte 00
     .byte 1
-    .byte 00
     .byte 3
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 4
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 1
-    .byte 00
     .byte 5
-    .byte 00
     .byte 0
-    .byte 00
     .byte 5
-    .byte 00
     .byte 0
-    .byte 00
     .byte 5
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 6
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 7
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 8
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 9
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 10
-    .byte 00
     .byte 0
-    .byte 00
     .byte 11
-    .byte 00
     .byte 0
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 11
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 12
-    .byte 00
     .byte 1
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 13
-    .byte 00
     .byte 2
-    .byte 00
     .byte 14
-    .byte 00
     .byte 2
-    .byte 00
     .byte 14
-    .byte 00
     .byte 2
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 14
-    .byte 00
     .byte 3
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 4
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 15
-    .byte 00
     .byte 5
-    .byte 00
     .byte 16
-    .byte 00
     .byte 5
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 6
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 7
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00
     .byte 8
-    .byte 00
     .byte 16
-    .byte 00

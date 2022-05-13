@@ -11,6 +11,7 @@
 // GLOBAL VARIABLES
 Coordinates virusCoordinates[NUM_VIRUSES];
 Coordinates initialVirusCoordinates[NUM_VIRUSES];
+unsigned char i;
 
 
 #pragma bss-name(push, "BSS")
@@ -55,8 +56,6 @@ void initialise_viruses() {
 }
 
 void movement() {
-    int i;
-
     for (i = 0; i < NUM_VIRUSES; ++i) {
         virusCoordinates[i].x = initialVirusCoordinates[i].x + virusPath[get_frame_count()].x;
         virusCoordinates[i].y = initialVirusCoordinates[i].y + virusPath[get_frame_count()].y;
