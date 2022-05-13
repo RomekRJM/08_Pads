@@ -4,9 +4,13 @@
 #include "lungs.h"
 #include "math.h"
 
+#define NUM_VIRUSES 16
+
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
+Coordinates virusCoordinates[NUM_VIRUSES];
+Coordinates initialVirusCoordinates[NUM_VIRUSES];
 
 
 #pragma bss-name(push, "BSS")
@@ -29,9 +33,7 @@ const char paletteSprite[] = {
         0x0f, 0x3d, 0x30, 0x05,
 };
 
-#define NUM_VIRUSES 16
-
-void initialise_viruses(Coordinates *initialVirusCoordinates) {
+void initialise_viruses() {
     int i;
     int virusesInRow = 0;
     int y = 120;
@@ -52,7 +54,7 @@ void initialise_viruses(Coordinates *initialVirusCoordinates) {
     }
 }
 
-void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinates, const Coordinates *virusPath) {
+void movement() {
     int i;
 
     for (i = 0; i < NUM_VIRUSES; ++i) {
@@ -61,7 +63,7 @@ void movement(Coordinates *virusCoordinates, Coordinates *initialVirusCoordinate
     }
 }
 
-void draw_sprites(Coordinates *virusCoordinates) {
+void draw_sprites() {
     static int virusSprite = 0;
     int i;
     oam_clear();
@@ -108,17 +110,15 @@ void init_nes() {
 }
 
 void main(void) {
-    Coordinates virusCoordinates[NUM_VIRUSES];
-    Coordinates initialVirusCoordinates[NUM_VIRUSES];
 
     init_nes();
 
-    initialise_viruses(initialVirusCoordinates);
+    initialise_viruses();
 
 
     while (1) {
-        movement(virusCoordinates, initialVirusCoordinates, virusPath);
-        draw_sprites(virusCoordinates);
+        movement();
+        draw_sprites();
 //        gray_line();
         ppu_wait_nmi();
     }
